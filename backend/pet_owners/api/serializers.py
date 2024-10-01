@@ -5,3 +5,8 @@ class PetOwnersSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.PetOwners
         fields = '__all__'
+        
+class PetOwnersOnlyEmailSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = models.PetOwners
+        fields = ('email',)

@@ -25,7 +25,7 @@ from pet_owners.api import viewsets as petownerviewsets
 
 route = routers.DefaultRouter()
 
-route.register(r'petowners', petownerviewsets.PetOwnersViewSet, basename="PetOwner")
+route.register(r'petowners', petownerviewsets.PetOwnersViewSet , basename="PetOwner")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
