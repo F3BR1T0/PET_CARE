@@ -1,0 +1,4 @@
+django
+djangorestframework
+djangorestframework_simplejwt
+djangorestframework-api-key==3.*
