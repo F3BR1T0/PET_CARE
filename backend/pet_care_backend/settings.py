@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_api_key',
-    'pet_owners'
+    'pet_owners',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -82,6 +83,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+AUTH_USER_MODEL = 'account.AppAccount'
 
 
 # Password validation
