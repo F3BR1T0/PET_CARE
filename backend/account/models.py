@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from uuid import uuid4
 
 class AppAccountManager(BaseUserManager):
     def create_user(self, email, username, password = None):
@@ -27,7 +28,7 @@ class AppAccountManager(BaseUserManager):
         return user
     
 class AppAccount(AbstractBaseUser, PermissionsMixin):
-    id = models.AutoField(primary_key=True)
+    id = models.URLField(primary_key=True,default=uuid4, editable=False)
     email = models.EmailField(max_length=50, unique=True)
     username = models.CharField(max_length=50, unique=True)
     is_staff = models.BooleanField(default=False)
