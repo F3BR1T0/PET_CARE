@@ -13,26 +13,29 @@ class AccountRegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-class AccountLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
-        fields = ('email', 'password')
+class AccountLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
         
 class AccountResetPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
     new_password = serializers.CharField(required=True, write_only=True)
+    
+    def save(self, id):
+        new_password = self.validated_data.get('new_password')
+        user = UserModel.objects.get(id=id)
+        user.set_password(new_password)
+        user.save()
+        
+class AccountRequestPasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
     
     def validate_email(self, value):
         if not UserModel.objects.filter(email=value).exists():
             raise serializers.ValidationError(_('User with this email does not exist.'))
         return value
     
-    def save(self):
-        email = self.validated_data.get('email')
-        new_password = self.validated_data.get('new_password')
-        user = UserModel.objects.get(email=email)
-        user.set_password(new_password)
-        user.save()
+    def get_user(self):
+        return UserModel.objects.get(email=self.validated_data.get('email'))
     
 class AccountDefaultSerializer(serializers.Serializer):
     pass

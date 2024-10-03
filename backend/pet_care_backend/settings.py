@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_api_key',
     'pet_owners',
-    'account'
+    'account',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -116,6 +117,7 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
     )
 }
 
@@ -141,3 +143,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'seu_email@gmail.com'
+EMAIL_HOST_PASSWORD = 'sua_senha'  # ou use uma variável de ambiente
+DEFAULT_FROM_EMAIL = 'seu_email@gmail.com'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+}
