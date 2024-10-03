@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
+
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,9 +108,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'account.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Backend padrão
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     )
 }
 

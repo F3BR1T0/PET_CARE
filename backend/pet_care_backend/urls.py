@@ -20,13 +20,14 @@ from django.urls import path, include
 from rest_framework import routers
 
 from pet_owners.api import viewsets as petownerviewsets
+from account.api import viewsets as accountviewsets
 
 route = routers.DefaultRouter()
 
 route.register(r'petowners', petownerviewsets.PetOwnersViewSet , basename="PetOwner")
+route.register(r'accounts', accountviewsets.AccountViewSet, basename='Account')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(route.urls)),
-    path('', include('account.urls')),
 ]
