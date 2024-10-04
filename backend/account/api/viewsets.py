@@ -140,6 +140,7 @@ class AccountViewSet(viewsets.ModelViewSet):
             try:
                 user = serializer.save()
                 if user:
+                    logout(request)
                     return httputils.response('Password changed successfully', status.HTTP_202_ACCEPTED)
             except Exception as e:
                 return httputils.response_bad_request_400(str(e))
