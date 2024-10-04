@@ -12,9 +12,8 @@ from account.api.serializers import AccountRegisterSerializer, AccountDefaultSer
 from account.models import AppAccount
 from pet_care_backend.utils import HttpResponseUtils as httputils
 
-class AccountViewSet(viewsets.ModelViewSet):    
+class AccountViewSet(viewsets.ViewSet):    
     serializer_class = AccountDefaultSerializer
-    queryset = AppAccount.objects.none()
     
     def get_serializer_class(self):
         if self.action == "register":
@@ -49,7 +48,7 @@ class AccountViewSet(viewsets.ModelViewSet):
     def logout(self, request):
         try:
             logout(request)
-            return httputils.response('Logout completed successfully',status=status.HTTP_205_RESET_CONTENT)
+            return httputils.response('Logout completed successfully',status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
         
@@ -69,7 +68,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                 return httputils.response_empy()
             else:
                 return httputils.response('Invalid credentials', status.HTTP_401_UNAUTHORIZED)
-        return httputils.response_as_json(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return httputils.response_as_json(serializer.errors,status.HTTP_400_BAD_REQUEST)
         
     
     @action(detail=False, methods=['get'], url_name='getme', permission_classes=[permissions.IsAuthenticated], authentication_classes=[SessionAuthentication])
@@ -105,7 +104,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                     return httputils.response('If the email is registered, you will receive a link to reset your password.')
             except Exception as e:
                 return httputils.response_bad_request_400(str(e))
-        return httputils.response_as_json(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return httputils.response_as_json(serializer.errors,status.HTTP_400_BAD_REQUEST)
             
     
     @action(detail=False, methods=['post'], url_name='reset_password', url_path='reset-password', permission_classes=[permissions.IsAuthenticated], authentication_classes=[JWTAuthentication])
@@ -117,7 +116,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                 return httputils.response('Password reset successfully.')
             except Exception as e:
                 return httputils.response(str(e), status.HTTP_400_BAD_REQUEST)
-        return httputils.response_as_json(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return httputils.response_as_json(serializer.errors,status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['put'], url_name='update', permission_classes=[permissions.IsAuthenticated], authentication_classes=[SessionAuthentication])
     def update_account(self, request):
