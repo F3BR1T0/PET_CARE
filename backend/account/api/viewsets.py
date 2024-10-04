@@ -121,7 +121,7 @@ class AccountViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['put'], url_name='update', permission_classes=[permissions.IsAuthenticated], authentication_classes=[SessionAuthentication])
     def update_account(self, request):
-        serializer = self.get_serializer(data=request.data, instance=request.user)
+        serializer = self.get_serializer(instance=request.user, data=request.data)
         
         if serializer.is_valid(raise_exception=True):
             try:
