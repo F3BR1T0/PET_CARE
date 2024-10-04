@@ -1,10 +1,10 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.response import Response
 
 from pet_owners.api import serializers
 from pet_owners import models
 from pet_owners.api.permissions import HasShareJunoApiKey
+from pet_care_backend.utils import HttpResponseUtils as httputils
 
 class PetOwnersViewSet(viewsets.ModelViewSet):
     
@@ -22,8 +22,8 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
         pet_owner = models.PetOwners.objects.filter(email=email).first()
         if pet_owner:
             response_serializer = serializers.PetOwnersSerializers(pet_owner)
-            return Response(response_serializer.data, status=200)
-        return Response({'detail': 'Pet owner not found'}, status=404)
+            return httputils.response_as_json(response_serializer.data)
+        return httputils.response('Pet owner not found', status.HTTP_404_NOT_FOUND)
     
     
  
