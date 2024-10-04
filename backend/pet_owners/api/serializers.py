@@ -9,6 +9,7 @@ class PetOwnersSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.PetOwners
         fields = '__all__'
+    
         
 class PetOwnerCreateSerializer(serializers.ModelSerializer):
     class Meta:
