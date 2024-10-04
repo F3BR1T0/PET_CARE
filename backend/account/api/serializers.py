@@ -36,6 +36,27 @@ class AccountRequestPasswordResetSerializer(serializers.Serializer):
     
     def get_user(self):
         return UserModel.objects.get(email=self.validated_data.get('email'))
+
+class AccountUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ('username', 'email')
     
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username')
+        instance.email = validated_data.get('email')
+        instance.save()
+        return instance
+    
+class AccountChangePasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ('password',)
+    
+    def update(self,instance, validated_data):
+        instance.set_password(validated_data.get('password'))
+        instance.save()
+        return instance
+        
 class AccountDefaultSerializer(serializers.Serializer):
     pass

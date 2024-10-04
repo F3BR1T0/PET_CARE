@@ -12,3 +12,6 @@ class HttpResponseUtils:
     
     def response_empy(statuscode=status.HTTP_200_OK):
         return Response(status=statuscode)
+    
+    def response_bad_request_400(msg):
+        return Response({'error': msg }, status.HTTP_400_BAD_REQUEST)
