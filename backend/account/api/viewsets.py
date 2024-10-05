@@ -51,7 +51,7 @@ class AccountViewSet(viewsets.ModelViewSet):
     
     def partial_update(self, request):
         self.__check_if_is_admin(request)
-        pass
+        return httputils.response_bad_request_400("not implemented")
 
     def create(self, request):
         self.__check_if_is_admin(request)
