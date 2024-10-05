@@ -7,6 +7,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from decouple import config
 
 from account.api.serializers import AccountRegisterSerializer, AccountDefaultSerializer, AccountLoginSerializer, AccountLogoutSerializer, AccountResetPasswordSerializer, AccountRequestPasswordResetSerializer, AccountUpdateSerializer, AccountChangePasswordSerializer
@@ -120,7 +122,20 @@ class AccountViewSet(viewsets.ModelViewSet):
     def getme(self, request):
         return httputils.response_as_json({'id': request.user.id,'username': request.user.username,'email': request.user.email})
         
-
+    @swagger_auto_schema(
+        methods=['post'],
+        operation_description="Solicita a redefinição de senha. Um URL de redirecionamento pode ser fornecido.",
+        manual_parameters=[
+            openapi.Parameter(
+                'redirect',
+                openapi.IN_QUERY,
+                description="URL para redirecionamento após a redefinição de senha.",
+                type=openapi.TYPE_STRING,
+                required=True
+            )
+        ],
+        responses={200: 'Success', 400: 'Bad Request'}
+    )
     @action(detail=False, methods=['post'], url_name='request password reset', url_path='request-password-reset')
     def request_password_reset(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -150,8 +165,20 @@ class AccountViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 return httputils.response_bad_request_400(str(e))
         return httputils.response_as_json(serializer.errors,status.HTTP_400_BAD_REQUEST)
-            
     
+    @swagger_auto_schema(
+        methods=['post'],
+        manual_parameters=[
+            openapi.Parameter(
+                'Authorization',
+                openapi.IN_HEADER,
+                description="Api Key no formato: `Token <token>`",
+                type=openapi.TYPE_STRING,
+                required=True
+            )
+        ],
+        responses={200: 'Success', 400: 'Bad Request'}
+    )            
     @action(detail=False, methods=['post'], url_name='reset_password', url_path='reset-password', permission_classes=[permissions.IsAuthenticated], authentication_classes=[JWTAuthentication])
     def reset_password(self, request):
         serializer = self.get_serializer(data=request.data)
