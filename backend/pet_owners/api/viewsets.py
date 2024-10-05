@@ -13,7 +13,7 @@ from pet_care_backend.utils import HttpResponseUtils as httputils
 
 class PetOwnersViewSet(viewsets.ModelViewSet):
     
-    serializer_class = serializers.PetOwnersSerializers
+    serializer_class = serializers.PetOwnersSerializer
     queryset = models.PetOwners.objects.all()
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
@@ -114,14 +114,13 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
         
-   
     @action(detail=False, methods=['post'], permission_classes=[HasShareJunoApiKey | IsAdminUser], url_path='findbyemail')
     def find_by_email(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            pet_owner = models.PetOwners.objects.filter(email=serializer.validated_data.get('email'))
-            if pet_owner:
-                response_serializer = serializers.PetOwnersSerializers(pet_owner)
+            pet_owner = self.get_queryset().filter(email=serializer.validated_data.get('email')).first()
+            if pet_owner is not None:
+                response_serializer = serializers.PetOwnersSerializer(pet_owner) 
                 return httputils.response_as_json(response_serializer.data)
             return httputils.response('Pet owner not found', status.HTTP_404_NOT_FOUND)
         

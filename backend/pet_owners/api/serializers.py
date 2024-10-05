@@ -6,7 +6,7 @@ from account.models import AppAccount
 
 UserModel = AppAccount
 
-class PetOwnersSerializers(serializers.ModelSerializer):
+class PetOwnersSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PetOwners
         fields = '__all__'
