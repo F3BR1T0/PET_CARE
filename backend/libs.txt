@@ -4,3 +4,4 @@ djangorestframework_simplejwt
 djangorestframework-api-key==3.*
 drf-yasg
 python-decouple
+setuptools

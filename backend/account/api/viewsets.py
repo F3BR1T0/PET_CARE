@@ -4,18 +4,24 @@ from django.contrib.auth import logout, login, authenticate
 from django.core.mail import send_mail
 from rest_framework import permissions, status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from decouple import config
 
 from account.api.serializers import AccountRegisterSerializer, AccountDefaultSerializer, AccountLoginSerializer, AccountResetPasswordSerializer, AccountRequestPasswordResetSerializer, AccountUpdateSerializer, AccountChangePasswordSerializer
 from pet_care_backend.utils import HttpResponseUtils as httputils
+from account.models import AppAccount
 
-class AccountViewSet(viewsets.GenericViewSet):    
+class AccountViewSet(viewsets.ModelViewSet):    
     serializer_class = AccountDefaultSerializer
+    queryset = AppAccount.objects.all()
+
+    def get_queryset(self):
+        return super().get_queryset()
     
     def get_serializer_class(self):
-        if self.action == "register":
+        if self.action in ("register", "create"):
             return AccountRegisterSerializer
         if self.action == "login":
             return AccountLoginSerializer
@@ -25,10 +31,48 @@ class AccountViewSet(viewsets.GenericViewSet):
             return AccountRequestPasswordResetSerializer
         if self.action == "update_account":
             return AccountUpdateSerializer
-        if self.action == "change_password":
+        if self.action in ("change_password", "change_password_as_admin"):
             return AccountChangePasswordSerializer
         return super().get_serializer_class()
+    
+    def list(self, request):
+        self.__check_if_is_admin(request)
+        return super().list(request) 
+    
+    def retrieve(self, request, pk:None):
+        self.__check_if_is_admin(request)
+        return super().retrieve(request, pk)
+    
+    def update(self, request, pk:None):
+        self.__check_if_is_admin(request)
+        return super().update(request, pk)
+    
+    def partial_update(self, request):
+        self.__check_if_is_admin(request)
+        pass
 
+    def create(self, request):
+        self.__check_if_is_admin(request)
+        return httputils.response_bad_request_400("not implemented")
+    
+    def destroy(self, request, pk: None):
+        self.__check_if_is_admin(request)
+        return super().destroy(request, pk)
+    
+    @action(detail=True, methods=['put'],url_path='change-password-as-admin', permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser], authentication_classes=[SessionAuthentication])
+    def change_password_as_admin(self, request, pk: None):
+        self.__check_if_is_admin(request)
+        user = self.get_queryset().filter(id=pk).first()
+        serializer = self.get_serializer(data=request.data, instance=user)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                user = serializer.save()
+                if user:
+                    return httputils.response('Password changed successfully', status.HTTP_202_ACCEPTED)
+            except Exception as e:
+                return httputils.response_bad_request_400(str(e))
+            return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'], url_name='register')
     def register(self, request):
@@ -144,5 +188,7 @@ class AccountViewSet(viewsets.GenericViewSet):
                 return httputils.response_bad_request_400(str(e))
             return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
         
-        
+    def __check_if_is_admin(self,request):
+        self.permission_classes = [IsAuthenticated, IsAdminUser]
+        self.check_permissions(request)
     

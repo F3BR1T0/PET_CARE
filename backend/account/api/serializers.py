@@ -52,11 +52,16 @@ class AccountChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ('password',)
+
+    def get_user(id):
+        return UserModel.objects.get(id=id)
     
     def update(self,instance, validated_data):
         instance.set_password(validated_data.get('password'))
         instance.save()
         return instance
         
-class AccountDefaultSerializer(serializers.Serializer):
-    pass
+class AccountDefaultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = '__all__'

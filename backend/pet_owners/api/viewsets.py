@@ -1,9 +1,7 @@
-import json
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import SessionAuthentication
-from django.http import HttpRequest
 
 from account.api.serializers import AccountUpdateSerializer  
 from pet_owners.api import serializers
