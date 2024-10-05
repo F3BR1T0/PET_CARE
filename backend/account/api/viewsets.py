@@ -9,10 +9,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from decouple import config
 
 from account.api.serializers import AccountRegisterSerializer, AccountDefaultSerializer, AccountLoginSerializer, AccountResetPasswordSerializer, AccountRequestPasswordResetSerializer, AccountUpdateSerializer, AccountChangePasswordSerializer
-from account.models import AppAccount
 from pet_care_backend.utils import HttpResponseUtils as httputils
 
-class AccountViewSet(viewsets.ViewSet):    
+class AccountViewSet(viewsets.GenericViewSet):    
     serializer_class = AccountDefaultSerializer
     
     def get_serializer_class(self):
