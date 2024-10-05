@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from decouple import config
 
-from account.api.serializers import AccountRegisterSerializer, AccountDefaultSerializer, AccountLoginSerializer, AccountResetPasswordSerializer, AccountRequestPasswordResetSerializer, AccountUpdateSerializer, AccountChangePasswordSerializer
+from account.api.serializers import AccountRegisterSerializer, AccountDefaultSerializer, AccountLoginSerializer, AccountLogoutSerializer, AccountResetPasswordSerializer, AccountRequestPasswordResetSerializer, AccountUpdateSerializer, AccountChangePasswordSerializer
 from pet_care_backend.utils import HttpResponseUtils as httputils
 from account.models import AppAccount
 
@@ -25,6 +25,8 @@ class AccountViewSet(viewsets.ModelViewSet):
             return AccountRegisterSerializer
         if self.action == "login":
             return AccountLoginSerializer
+        if self.action == "logout":
+            return AccountLogoutSerializer
         if self.action == "reset_password":
             return AccountResetPasswordSerializer
         if self.action == "request_password_reset":

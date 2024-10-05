@@ -30,6 +30,5 @@ class PetOwnerUpdateSerializer(serializers.ModelSerializer):
         instance.updated_at = timezone.now()
         instance.save()
         return instance
-        
 class PetOwnersOnlyEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

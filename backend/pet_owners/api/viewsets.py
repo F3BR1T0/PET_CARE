@@ -1,9 +1,11 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import SessionAuthentication
 
-from account.api.serializers import AccountUpdateSerializer  
+from account.api.serializers import AccountUpdateSerializer
+from account.models import AppAccount 
 from pet_owners.api import serializers
 from pet_owners import models
 from pet_owners.api.permissions import HasShareJunoApiKey
@@ -16,10 +18,11 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     
+    UserModel = AppAccount
     
     def get_queryset(self):
-        if self.action == "create":
-            return models.PetOwners.objects.filter(email=self.request.user.email)
+        if self.action in ("create","user_delete_petowner", "user_update_petowner", "get_petowner"):
+            return models.PetOwners.objects.filter(email=self.request.user.email).first()
         return super().get_queryset()
     
     def get_serializer_class(self):
@@ -56,7 +59,7 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
         
         if serializer.is_valid(raise_exception=True):
             try:
-                user = self.get_queryset().first()
+                user = self.get_queryset()
                 
                 if user:
                     return httputils.response('User already registered')
@@ -74,7 +77,7 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['put'], url_name='user update petowner', url_path='user-update-petowner')
     def user_update_petowner(self, request):
-        serializer = self.get_serializer(data=request.data, instance=self.get_queryset().first())
+        serializer = self.get_serializer(data=request.data, instance=self.get_queryset())
         
         if serializer.is_valid(raise_exception=True):
             try:
@@ -94,8 +97,8 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_name="get petowner", url_path='get-petowner')
     def get_petowner(self, request):
         try:
-            userpetowner = self.get_queryset().first()
-            
+            userpetowner = self.get_queryset()
+        
             if userpetowner:
                 return httputils.response_as_json({
                     'username-login': request.user.username,
@@ -116,17 +119,29 @@ class PetOwnersViewSet(viewsets.ModelViewSet):
     def find_by_email(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            pet_owner = models.PetOwners.objects.filter(email=serializer.validated_data.get('email')).first()
+            pet_owner = models.PetOwners.objects.filter(email=serializer.validated_data.get('email'))
             if pet_owner:
                 response_serializer = serializers.PetOwnersSerializers(pet_owner)
                 return httputils.response_as_json(response_serializer.data)
             return httputils.response('Pet owner not found', status.HTTP_404_NOT_FOUND)
-    
+        
+    @action(detail=False, methods=['delete'], permission_classes = [IsAuthenticated], authentication_classes=[SessionAuthentication])
+    def user_delete_petowner(self, request):
+        user = self.get_queryset()
+        if user is None:
+            return httputils.response_bad_request_400("Pet owner not found")    
+        
+        useraccount = self.UserModel.objects.get(email=user.email)
+        if useraccount is None:
+            return httputils.response_bad_request_400("Account not found")
+        try:
+            user.delete()
+            useraccount.delete()
+            logout(request)
+            return httputils.response("User deleted successfuly")
+        except Exception as e:
+            return httputils.response_bad_request_400(str(e))
+            
     def __check_if_is_admin(self,request):
         self.permission_classes = [IsAuthenticated, IsAdminUser]
         self.check_permissions(request)
-    
-    
-    
- 
-    
