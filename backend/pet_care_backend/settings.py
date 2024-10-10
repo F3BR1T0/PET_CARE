@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_api_key',
     'pet_owners',
     'account',
+    'address',
     'rest_framework_simplejwt',
     'drf_yasg',
 ]
@@ -115,12 +116,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Backend padrão
 )
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES' : (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
-    )
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES' : (
+#         'rest_framework.authentication.SessionAuthentication',
+#         'rest_framework_simplejwt.authentication.JWTAuthentication'
+#     )
+# }
 
 
 # Internationalization

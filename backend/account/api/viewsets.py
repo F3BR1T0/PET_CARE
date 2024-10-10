@@ -18,9 +18,6 @@ from account.models import AppAccount
 class AccountViewSet(viewsets.ModelViewSet):    
     serializer_class = AccountDefaultSerializer
     queryset = AppAccount.objects.all()
-
-    def get_queryset(self):
-        return super().get_queryset()
     
     def get_serializer_class(self):
         if self.action in ("register", "create"):
@@ -220,4 +217,3 @@ class AccountViewSet(viewsets.ModelViewSet):
     def __check_if_is_admin(self,request):
         self.permission_classes = [IsAuthenticated, IsAdminUser]
         self.check_permissions(request)
-    
