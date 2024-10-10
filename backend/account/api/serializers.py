@@ -65,5 +65,10 @@ class AccountDefaultSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = '__all__'
+        
+class AccontSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = '__all__'
 class AccountLogoutSerializer(serializers.Serializer):
     pass
