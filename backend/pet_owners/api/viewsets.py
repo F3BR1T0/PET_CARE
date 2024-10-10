@@ -1,9 +1,11 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
+from pet_owners.api.authentications import CustomJunoAuthentication
 
 from address.api.serializers import AddressSerializer
 from account.models import AppAccount 
@@ -73,21 +75,9 @@ class PetOwnersViewSet(PetOwnersViewSetBase):
             userpetowner = self.get_queryset()
             if userpetowner is None:
                 return httputils.response_bad_request_400('Not registered')
-            address_data = userpetowner.address
-            if address_data is not None:
-                address_data = AddressSerializer(userpetowner.address).data
             if userpetowner:
-                return httputils.response_as_json({
-                    'username-login': request.user.username,
-                    'name': userpetowner.name,
-                    'email': userpetowner.email,
-                    'photo': userpetowner.foto,
-                    'cpf': userpetowner.cpf,
-                    'address': address_data,
-                    'telefone': userpetowner.telefone,
-                    'created_at': userpetowner.create_at,
-                    'updated_at': userpetowner.update_at
-                })
+                serializer_response = serializers.PetOwnersSerializer(userpetowner)
+                return httputils.response_as_json(serializer_response.data)
             return httputils.response_bad_request_400('User is not registered')
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
@@ -179,10 +169,11 @@ class PetOwnersAdminViewSet(viewsets.ModelViewSet, PetOwnersViewSetBase):
     
     def destroy(self, request, pk: None):
         return super().destroy(request, pk)
-    
+  
 class PetOwnersExtraViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.PetOwnersOnlyEmailSerializer
     permission_classes = [HasShareJunoApiKey]
+    authentication_classes = [CustomJunoAuthentication]
     
     @action(detail=False, methods=['post'], url_name='findbyemail', url_path='findbyemail')
     def find_by_email(self, request):
@@ -192,6 +183,7 @@ class PetOwnersExtraViewSet(viewsets.GenericViewSet):
             petowner = models.PetOwners.objects.filter(email=serializer.data.get('email')).first()
             if petowner is None:
                 return httputils.response_bad_request_400("Not found.")
-            return httputils.response_as_json(petowner)
+            serializer_response = serializers.PetOwnersSerializer(petowner)
+            return httputils.response_as_json(serializer_response.data)
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
             
