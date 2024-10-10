@@ -1,7 +1,5 @@
 from rest_framework_api_key.permissions import BaseHasAPIKey
 from rest_framework_api_key.models import APIKey
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
 from decouple import config
 
 class HasShareJunoApiKey(BaseHasAPIKey):

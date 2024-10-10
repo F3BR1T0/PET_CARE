@@ -179,3 +179,19 @@ class PetOwnersAdminViewSet(viewsets.ModelViewSet, PetOwnersViewSetBase):
     
     def destroy(self, request, pk: None):
         return super().destroy(request, pk)
+    
+class PetOwnersExtraViewSet(viewsets.GenericViewSet):
+    serializer_class = serializers.PetOwnersOnlyEmailSerializer
+    permission_classes = [HasShareJunoApiKey]
+    
+    @action(detail=False, methods=['post'], url_name='findbyemail', url_path='findbyemail')
+    def find_by_email(self, request):
+        serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid(raise_exception=True):
+            petowner = models.PetOwners.objects.filter(email=serializer.data.get('email')).first()
+            if petowner is None:
+                return httputils.response_bad_request_400("Not found.")
+            return httputils.response_as_json(petowner)
+        return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+            

@@ -163,5 +163,3 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
 }
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

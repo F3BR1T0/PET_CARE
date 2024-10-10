@@ -9,7 +9,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from decouple import config
 
 from account.api import serializers
 from pet_care_backend.utils import HttpResponseUtils as httputils
