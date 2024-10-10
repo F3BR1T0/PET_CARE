@@ -19,6 +19,9 @@ class PetOwnersViewSetBase(viewsets.GenericViewSet):
     
     def _get_account(self):
         return self.UserModel.objects.filter(email=self.request.user.email).first()
+    
+    def _get_petowner_by_email(self, _email):
+        return models.PetOwners.objects.filter(email=_email).first()
 
 class PetOwnersViewSet(PetOwnersViewSetBase):
     serializer_class = serializers.PetOwnerSaveSerializer
@@ -112,6 +115,9 @@ class PetOwnerAddressViewSet(PetOwnersViewSetBase):
         serializer = self.serializer_class(data=request.data)
         petowner = self.get_queryset()
         
+        if petowner is None:
+            return httputils.response_bad_request_400("Not registered.")
+        
         if petowner.address is not None:
             return httputils.response_bad_request_400("Already have a address.")
         
@@ -151,7 +157,11 @@ class PetOwnersAdminViewSet(viewsets.ModelViewSet, PetOwnersViewSetBase):
     queryset = models.PetOwners.objects.all()
     permission_classes = [IsAuthenticated & IsAdminUser]
     authentication_classes = [SessionAuthentication]
-        
+
+    def get_serializer_class(self):
+        if self.action == "find_by_email":
+            return serializers.PetOwnersOnlyEmailSerializer
+        return super().get_serializer_class()
 
     def create(self, request):
         return httputils.response_bad_request_400("Not implemented")
@@ -169,21 +179,39 @@ class PetOwnersAdminViewSet(viewsets.ModelViewSet, PetOwnersViewSetBase):
     
     def destroy(self, request, pk: None):
         return super().destroy(request, pk)
-  
-class PetOwnersExtraViewSet(viewsets.GenericViewSet):
-    serializer_class = serializers.PetOwnersOnlyEmailSerializer
-    permission_classes = [HasShareJunoApiKey]
-    authentication_classes = [CustomJunoAuthentication]
     
-    @action(detail=False, methods=['post'], url_name='findbyemail', url_path='findbyemail')
+    @action(detail=False, methods=['post'], url_name="find by email as admin", url_path='find-by-email')
     def find_by_email(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         
         if serializer.is_valid(raise_exception=True):
-            petowner = models.PetOwners.objects.filter(email=serializer.data.get('email')).first()
+            petowner = self._get_petowner_by_email(serializer.data.get('email'))
             if petowner is None:
                 return httputils.response_bad_request_400("Not found.")
             serializer_response = serializers.PetOwnersSerializer(petowner)
             return httputils.response_as_json(serializer_response.data)
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        
+class PetOwnersExtraViewSet(PetOwnersViewSetBase):
+    serializer_class = serializers.PetOwnersOnlyEmailSerializer
+    permission_classes = [HasShareJunoApiKey]
+    authentication_classes = [CustomJunoAuthentication]
+    
+    @action(detail=False, methods=['post'], url_name='findbyemail', url_path='find-by-email-share')
+    def find_by_email_shared(self, request):
+        serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid(raise_exception=True):
+            petowner = self._get_petowner_by_email(serializer.data.get('email'))
+            if petowner is None:
+                return httputils.response_bad_request_400("Not found.")
+            return httputils.response_as_json({
+                'email': petowner.email,
+                'name': petowner.name,
+                'city': petowner.address.cidade,
+                'occupation':'not implemented'
+            })
+        return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    
+    
             

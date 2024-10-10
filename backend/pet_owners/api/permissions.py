@@ -6,7 +6,7 @@ class HasShareJunoApiKey(BaseHasAPIKey):
     model = APIKey
     def has_permission(self, request, view):
         api_key = self.get_key(request)
-                
+
         if not api_key:
             return False
         

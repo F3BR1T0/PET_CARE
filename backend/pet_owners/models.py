@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from django.utils import timezone
 from address.models import Address
@@ -14,3 +15,8 @@ class PetOwners(models.Model):
     address = models.OneToOneField(Address, on_delete=models.CASCADE, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+    
+    def delete(self, *args, **kwargs):
+        if self.address:
+            self.address.delete()
+        return super().delete(*args, **kwargs)
