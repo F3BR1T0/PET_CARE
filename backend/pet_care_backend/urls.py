@@ -30,8 +30,9 @@ route.register(r'petowners', petownerviewsets.PetOwnersViewSet , basename="PetOw
 route.register(r'petowners/address', petownerviewsets.PetOwnerAddressViewSet, basename="PetOwner address")
 route.register(r'private/petowners', petownerviewsets.PetOwnersAdminViewSet, basename="PetOwner admin")
 route.register(r'petowners/extra', petownerviewsets.PetOwnersExtraViewSet, basename="PetOwner extra")
-route.register(r'accounts/public', accountviewsets.AccountViewSetNotAuthenticated, basename='Account')
-route.register(r'accounts/auth', accountviewsets.AccountViewSetAuthenticated, basename='Account authenticated')
+route.register(r'accounts/public', accountviewsets.AccountNotAuthenticatedViewSet, basename='Account')
+route.register(r'accounts/auth', accountviewsets.AccountAuthenticatedViewSet, basename='Account authenticated')
+route.register(r'private/accounts', accountviewsets.AccountAdminViewSet, basename="Account admin")
 
 schema_view = get_schema_view(
     openapi.Info(
