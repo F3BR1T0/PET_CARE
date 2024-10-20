@@ -27,7 +27,7 @@ from pet.api import viewsets as petviewsets
 
 route = routers.DefaultRouter()
 
-route.register(r'pet', petviewsets.PetViewSet, basename="Pet")
+route.register(r'pet', petviewsets.PetViewSet, basename="pets")
 route.register(r'petowners', petownerviewsets.PetOwnersViewSet , basename="PetOwner")
 route.register(r'petowners/address', petownerviewsets.PetOwnerAddressViewSet, basename="PetOwner address")
 route.register(r'private/petowners', petownerviewsets.PetOwnersAdminViewSet, basename="PetOwner admin")

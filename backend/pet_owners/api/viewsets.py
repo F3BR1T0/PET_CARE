@@ -207,7 +207,7 @@ class PetOwnersExtraViewSet(PetOwnersViewSetBase):
                 return httputils.response_bad_request_400("Not found.")
             return httputils.response_as_json({
                 'email': petowner.email,
-                'name': petowner.name,
+                'name': petowner.nome,
                 'city': petowner.address.cidade,
                 'occupation':'not implemented'
             })

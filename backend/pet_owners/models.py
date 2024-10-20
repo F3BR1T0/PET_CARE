@@ -7,7 +7,7 @@ from uuid import uuid4
 
 class PetOwners(models.Model):
     id_pet_owners = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    name = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255)
     foto = models.CharField(max_length=255)
     cpf = models.CharField(max_length=11)
     email = models.CharField(max_length=255)
