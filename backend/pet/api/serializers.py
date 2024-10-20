@@ -11,7 +11,8 @@ class PetSaveSerializer(serializers.ModelSerializer):
         model = models.Pet
         exclude = ['pet_owner']
         
-class HistoricoSerializer(serializers.ModelSerializer):
+class HistoricoMedicoSerializer(serializers.ModelSerializer):
+    pet = PetSerializer(read_only=True)
     class Meta:
         model = models.HistoricoMedico
         fields = '__all__'

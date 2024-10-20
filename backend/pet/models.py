@@ -41,7 +41,7 @@ class Vermifugos(models.Model):
 class Doecas(models.Model):
     doencas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=100)
-    descricao = models.TextField()
+    descricao = models.TextField(null=True)
     sintomas = models.TextField()
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
@@ -49,14 +49,16 @@ class Doecas(models.Model):
 class VacinasAdministradas(models.Model):
     vacinas_administradas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    vacina = models.ForeignKey(Vacinas, on_delete=models.CASCADE,)
+    vacina = models.ForeignKey(Vacinas, on_delete=models.CASCADE)
+    observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
     data_reforco = models.DateTimeField(null=True, blank=True)
 
 class VermifugosAdministrados(models.Model):
     vermifugos_administrados_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE,)
+    vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE)
+    observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
     data_reforco = models.DateTimeField(null=True, blank=True)
 
@@ -71,6 +73,7 @@ class DoencasDocumentadas(models.Model):
     doencas_documentadas_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
     doenca = models.ForeignKey(Doecas, on_delete=models.CASCADE)
+    observacao = models.TextField(null=True)
     data_diagnostico = models.DateTimeField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     

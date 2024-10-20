@@ -14,18 +14,18 @@ class PetBaseViewSet(viewsets.GenericViewSet):
         if petowner is None:
             raise PetOwners.DoesNotExist
         return petowner
-
-class PetViewSet(PetBaseViewSet):
-    serializer_class = serializers.PetSaveSerializer
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
     
     def get_queryset(self):
         pet_owner = self._get_petowner()
         queryset = models.Pet.objects.filter(pet_owner = pet_owner)
         if queryset is None: 
-             raise models.Pet.DoesNotExist
+                raise models.Pet.DoesNotExist
         return queryset
+
+class PetViewSet(PetBaseViewSet):
+    serializer_class = serializers.PetSaveSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
     
     @action(detail=False, methods=['post'], url_name='register', url_path='register')
     def register(self, request):
@@ -79,5 +79,28 @@ class PetViewSet(PetBaseViewSet):
             return httputils.response("Pet deleted", status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
-                
+
+class PetMedicalHistoryViewSet(PetBaseViewSet):
+    serializer_class = serializers.PetSaveSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
     
+    def get_queryset(self, pk: None):
+        pet_owner = self._get_petowner()
+        pet = models.Pet.objects.filter(pet_owner = pet_owner).filter(pet_id = pk).first()
+        if pet is None:
+            raise models.Pet.DoesNotExist
+        medical_history = models.HistoricoMedico.objects.filter(pet = pet).first()
+        if medical_history is None:
+            raise models.HistoricoMedico.DoesNotExist
+        return medical_history
+    
+    @action(detail=True, methods=['get'], url_name='get', url_path='get')
+    def get(self, request, pk:None):
+        try:
+            medical_history = self.get_queryset(pk)
+            return httputils.response_as_json(serializers.HistoricoMedicoSerializer(medical_history).data)
+        except Exception as e:
+            return httputils.response_bad_request_400(str(e))
+            
+               

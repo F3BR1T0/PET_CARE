@@ -95,7 +95,7 @@ class PetApiTesteCaseGet(APITestCase):
         self.assertEqual(response.data['sexo'], pet.sexo)
 
         # Verifica se o pet owner é o correto
-        self.assertEqual(response.data['pet_owner'], self.owner.id_pet_owners)  # Ajuste conforme necessário
+        self.assertEqual(response.data['pet_owner'], self.owner.id_pet_owners)
         
 class PetApiTestCaseUpdate(APITestCase):
     def setUp(self) -> None:
@@ -183,3 +183,39 @@ class PetApiTestCaseDelete(APITestCase):
         
         # Verifica se o historico do pet foi excluido tambem
         self.assertEqual(HistoricoMedico.objects.count(), 0)
+        
+class PetMedicalHistoryTestCaseGet(APITestCase):
+    def setUp(self) -> None:
+        default_email = "user@example.com"
+        
+        self.account = AppAccount.objects.create(email=default_email, username="user")
+        self.account.set_password('password')
+        self.account.save()  # Salve o usuário para que a senha seja aplicada
+        
+        self.owner = PetOwners.objects.create(nome='User', email=default_email)
+        
+        # Autenticando o usuário
+        self.client.force_authenticate(self.account)
+
+        self.pet_data = {
+            "nome": "Bobby",
+            "especie": "Cachorro",
+            "raca": "Poodle",
+            "peso": 12.5,
+            "idade": 3,
+            "sexo": "M",
+            "pet_owner": self.owner.id_pet_owners
+        }
+
+        # Faz a requisição POST para criar o pet
+        self.client.post(reverse('pets-register'), self.pet_data, format='json')
+        
+        self.pet = Pet.objects.first()
+        
+    def test_get_medical_history(self):
+        response = self.client.get(reverse('pets-medical-history-get', args=[self.pet.pet_id]))
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verifica se os dados retornados estão corretos
+        self.assertEqual(response.data['pet']['nome'], self.pet.nome)
