@@ -14,12 +14,10 @@ class PetApiTestCase(APITestCase):
         
         self.owner = PetOwners.objects.create(nome='User', email=default_email)
         
-        self.url = reverse('pets-register')
-        
-    def test_register_pet(self):
-        
         # Autenticando o usuário
         self.client.force_authenticate(self.account)
+        
+    def test_register_pet(self):
         
         data = {
             "nome": "Bobby",
@@ -32,7 +30,7 @@ class PetApiTestCase(APITestCase):
         }   
         
         # Faz uma requisição POST para a rota de registro com os dados do pet
-        response = self.client.post(self.url, data, format='json')      
+        response = self.client.post(reverse('pets-register'), data, format='json')      
         
         # Verifica se a resposta foi HTTP 201 CREATED
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -50,3 +48,51 @@ class PetApiTestCase(APITestCase):
         
         # Verifica se os dados foram adiconados corretamente
         self.assertEqual(pet.nome, data['nome'])
+        
+class PetApiTesteCaseGet(APITestCase):
+    def setUp(self) -> None:
+        default_email = "user@example.com"
+        
+        self.account = AppAccount.objects.create(email=default_email, username="user")
+        self.account.set_password('password')
+        self.account.save()  # Salve o usuário para que a senha seja aplicada
+        
+        self.owner = PetOwners.objects.create(nome='User', email=default_email)
+        
+        # Autenticando o usuário
+        self.client.force_authenticate(self.account)
+
+        self.pet_data = {
+            "nome": "Bobby",
+            "especie": "Cachorro",
+            "raca": "Poodle",
+            "peso": 12.5,
+            "idade": 3,
+            "sexo": "M",
+            "pet_owner": self.owner.id_pet_owners
+        }
+
+        # Faz a requisição POST para criar o pet
+        self.client.post(reverse('pets-register'), self.pet_data, format='json')
+        
+    def test_get_pet(self):
+        
+        # Obtém o pet que foi criado no setUp
+        pet = Pet.objects.first()
+
+        # Faz uma requisição GET para a rota de obter o pet
+        response = self.client.get(reverse('pets-get', args=[pet.pet_id]))  # Ajuste a URL conforme necessário
+
+        # Verifica se a resposta foi HTTP 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verifica se os dados retornados estão corretos
+        self.assertEqual(response.data['nome'], pet.nome)
+        self.assertEqual(response.data['especie'], pet.especie)
+        self.assertEqual(response.data['raca'], pet.raca)
+        self.assertEqual(float(response.data['peso']), float(pet.peso))
+        self.assertEqual(response.data['idade'], pet.idade)
+        self.assertEqual(response.data['sexo'], pet.sexo)
+
+        # Verifica se o pet owner é o correto
+        self.assertEqual(response.data['pet_owner'], self.owner.id_pet_owners)  # Ajuste conforme necessário

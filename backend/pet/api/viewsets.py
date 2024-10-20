@@ -35,5 +35,25 @@ class PetViewSet(PetBaseViewSet):
             except Exception as e:
                 return httputils.response_bad_request_400(str(e))
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['get'], url_name='get', url_path='get')
+    def get(self, request, pk:None):
+        try:
+            pet_owner = self._get_petowner()
+            
+            if pet_owner is None:
+                raise PetOwners.DoesNotExist
+            
+            pet = models.Pet.objects.filter(pet_owner = pet_owner).filter(pet_id = pk).first()
+            if pet is None:
+                raise models.Pet.DoesNotExist
+            
+            return httputils.response_as_json(serializers.PetSerializer(pet).data)
+        except PetOwners.DoesNotExist:
+            return httputils.response_bad_request_400("Pet Owner does not exists.")
+        except models.Pet.DoesNotExist:
+            return httputils.response_bad_request_400("Pet does not exists.")
+        except Exception as e:
+                return httputils.response_bad_request_400(str(e))
             
     
