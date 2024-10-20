@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'pet_owners',
     'account',
     'address',
+    'pet',
     'rest_framework_simplejwt',
     'drf_yasg',
 ]
