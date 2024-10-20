@@ -13,6 +13,7 @@ class Pet(models.Model):
     nome = models.CharField(max_length=255)
     especie = models.CharField(max_length=255)
     raca = models.CharField(max_length=255)
+    peso = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     idade = models.IntegerField()
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
     create_at = models.DateTimeField(auto_now_add=True)
@@ -69,7 +70,7 @@ class DoencasDocumentadas(models.Model):
     
     doencas_documentadas_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    doenca = models.ForeignKey(Doecas, on_delete=models.CASCADE,)
+    doenca = models.ForeignKey(Doecas, on_delete=models.CASCADE)
     data_diagnostico = models.DateTimeField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     
