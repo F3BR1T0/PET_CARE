@@ -42,7 +42,7 @@ class Doencas(models.Model):
     
 class VacinasAdministradas(models.Model):
     vacinas_administradas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
+    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='vacinas_administradas')
     vacina = models.ForeignKey(Vacinas, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
@@ -51,7 +51,7 @@ class VacinasAdministradas(models.Model):
 class VermifugosAdministrados(models.Model):
     vermifugos_administrados_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE)
+    vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE, related_name='vermifugos_admistrados')
     observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
     data_reforco = models.DateTimeField(null=True, blank=True)
@@ -65,7 +65,7 @@ class DoencasDocumentadas(models.Model):
     ]
     
     doencas_documentadas_id = models.URLField(primary_key=True, default=uuid4, editable=False)
-    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
+    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='doencas_administradas')
     doenca = models.ForeignKey(Doencas, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_diagnostico = models.DateTimeField()
@@ -73,7 +73,7 @@ class DoencasDocumentadas(models.Model):
     
 class Cirurgia(models.Model):
     cirurgia_id = models.URLField(primary_key=True, default=uuid4, editable=False)
-    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
+    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='cirurgias_administradas')
     nome = models.CharField(max_length=100)
     data = models.DateTimeField()
     descricao = models.TextField()

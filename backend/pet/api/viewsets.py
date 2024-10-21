@@ -81,7 +81,7 @@ class PetViewSet(PetBaseViewSet):
             return httputils.response_bad_request_400(str(e))
 
 class PetMedicalHistoryViewSet(PetBaseViewSet):
-    serializer_class = serializers.PetSaveSerializer
+    serializer_class = serializers.HistoricoMedicoSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     
@@ -95,12 +95,29 @@ class PetMedicalHistoryViewSet(PetBaseViewSet):
             raise models.HistoricoMedico.DoesNotExist
         return medical_history
     
-    @action(detail=True, methods=['get'], url_name='get', url_path='get')
+    @action(detail=True, methods=['get'], url_name='get', url_path='get-by-pet')
     def get(self, request, pk:None):
         try:
             medical_history = self.get_queryset(pk)
             return httputils.response_as_json(serializers.HistoricoMedicoSerializer(medical_history).data)
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
-            
+    
+class PetMedicalHistoryVacinaViewSet(PetBaseViewSet):
+    serializer_class = serializers.VacinaAdministradasSaveSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    
+    @action(detail=False, methods=['post'], url_name='add-vacina', url_path='add-vacina')
+    def add_vacina(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            try:
+                serializer.save()
+                
+                return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
+            except Exception as e:
+                return httputils.response_bad_request_400(str(e))
+        return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        
                

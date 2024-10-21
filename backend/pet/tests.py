@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework import status
-from pet.models import Pet, HistoricoMedico
+from pet.models import Pet, HistoricoMedico, Vacinas, VacinasAdministradas
 from pet_owners.models import PetOwners
 from account.models import AppAccount
 
@@ -219,3 +219,53 @@ class PetMedicalHistoryTestCaseGet(APITestCase):
 
         # Verifica se os dados retornados estão corretos
         self.assertEqual(response.data['pet']['nome'], self.pet.nome)
+        
+class PetMedicalHistoryVacinaTesteCaseAdd(APITestCase):
+    def setUp(self) -> None:
+        default_email = "user@example.com"
+        
+        self.account = AppAccount.objects.create(email=default_email, username="user")
+        self.account.set_password('password')
+        self.account.save()  # Salve o usuário para que a senha seja aplicada
+        
+        self.owner = PetOwners.objects.create(nome='User', email=default_email)
+        
+        # Autenticando o usuário
+        self.client.force_authenticate(self.account)
+
+        self.pet_data = {
+            "nome": "Bobby",
+            "especie": "Cachorro",
+            "raca": "Poodle",
+            "peso": 12.5,
+            "idade": 3,
+            "sexo": "M",
+            "pet_owner": self.owner.id_pet_owners
+        }
+
+        # Faz a requisição POST para criar o pet
+        self.client.post(reverse('pets-register'), self.pet_data, format='json')
+        
+        self.pet = Pet.objects.first()
+        
+        self.medical_history = HistoricoMedico.objects.filter(pet = self.pet).first()
+        
+        self.vacina = Vacinas.objects.create(nome="example")
+        
+    def test_add_vacina_administrada(self):
+        data = {
+            "observacao": "string",
+            "data_aplicacao": "2024-10-21T02:43:37.669Z",
+            "data_reforco": "2024-10-21T02:43:37.669Z",
+            "vacina": f"{self.vacina.vacina_id}",
+            "historico_medico": f"{self.medical_history.historico_medico_id}",
+        }
+        
+        response = self.client.post(reverse('pets-medical-history-vacinas-add-vacina'),data, format="json")
+        
+        vacina_administrada = VacinasAdministradas.objects.first()
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(VacinasAdministradas.objects.count(), 1)
+        self.assertEqual(vacina_administrada.vacina.nome, self.vacina.nome)
+        self.assertAlmostEqual(vacina_administrada.historico_medico.historico_medico_id, self.medical_history.historico_medico_id)

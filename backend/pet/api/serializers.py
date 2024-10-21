@@ -11,13 +11,17 @@ class PetSaveSerializer(serializers.ModelSerializer):
         model = models.Pet
         exclude = ['pet_owner']
         
-class HistoricoMedicoSerializer(serializers.ModelSerializer):
-    pet = PetSerializer(read_only=True)
+class VacinaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.HistoricoMedico
-        fields = '__all__'
+        model = models.Vacinas
+        exclude = ['vacina_id']
         
 class VacinasAdministradasSerializer(serializers.ModelSerializer):
+    vacina = VacinaSerializer()
+    class Meta:
+        model = models.VacinasAdministradas
+        fields = '__all__'
+class VacinaAdministradasSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.VacinasAdministradas
         fields = '__all__'
@@ -35,6 +39,14 @@ class DoencasDocumentadasSerializer(serializers.ModelSerializer):
 class CirurgiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Cirurgia
+        fields = '__all__'
+
+        
+class HistoricoMedicoSerializer(serializers.ModelSerializer):
+    pet = PetSerializer(read_only=True)
+    vacinas_administradas = VacinasAdministradasSerializer(many=True, read_only=True)
+    class Meta:
+        model = models.HistoricoMedico
         fields = '__all__'
         
     
