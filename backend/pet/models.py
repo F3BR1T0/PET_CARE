@@ -29,22 +29,16 @@ class HistoricoMedico(models.Model):
 class Vacinas(models.Model):
     vacina_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=255)
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
 
 class Vermifugos(models.Model):
     vermifugos_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=255)
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
 
-class Doecas(models.Model):
+class Doencas(models.Model):
     doencas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=100)
     descricao = models.TextField(null=True)
     sintomas = models.TextField()
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
     
 class VacinasAdministradas(models.Model):
     vacinas_administradas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -72,7 +66,7 @@ class DoencasDocumentadas(models.Model):
     
     doencas_documentadas_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    doenca = models.ForeignKey(Doecas, on_delete=models.CASCADE)
+    doenca = models.ForeignKey(Doencas, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_diagnostico = models.DateTimeField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)

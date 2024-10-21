@@ -1,0 +1,37 @@
+[
+    {
+        "model": "pet.Vermifugos",
+        "pk": "f23a456c-aabc-4b6a-b81e-2a5fa2e5a2c1",
+        "fields": {
+            "nome": "Drontal"
+        }
+    },
+    {
+        "model": "pet.Vermifugos",
+        "pk": "b27c91f8-4fc1-4819-b346-2f2e614c6223",
+        "fields": {
+            "nome": "Panacur"
+        }
+    },
+    {
+        "model": "pet.Vermifugos",
+        "pk": "c65f8e29-8590-44ad-86f8-4ae5ff09cb8a",
+        "fields": {
+            "nome": "Milbemax"
+        }
+    },
+    {
+        "model": "pet.Vermifugos",
+        "pk": "a813b7cc-80c4-4b39-b788-2446f3bc66b5",
+        "fields": {
+            "nome": "Endogard"
+        }
+    },
+    {
+        "model": "pet.Vermifugos",
+        "pk": "fa55c6df-88ae-4b32-a654-69a5a1b20f59",
+        "fields": {
+            "nome": "Vermivet"
+        }
+    }
+]
