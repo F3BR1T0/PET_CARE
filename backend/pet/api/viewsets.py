@@ -58,7 +58,6 @@ class PetViewSet(PetBaseViewSet):
         except Exception as e:
                 return httputils.response_bad_request_400(str(e))
     
-
     @action(detail=True, methods=['put'], url_name='update', url_path='update')
     def update_pet(self, request, pk:None):
         serializer = self.get_serializer(data=request.data, instance=self.get_queryset().filter(pet_id = pk).first())
@@ -87,12 +86,10 @@ class PetMedicalHistoryViewSet(PetBaseViewSet):
     
     def get_queryset(self, pk: None):
         pet_owner = self._get_petowner()
-        pet = models.Pet.objects.filter(pet_owner = pet_owner).filter(pet_id = pk).first()
-        if pet is None:
-            raise models.Pet.DoesNotExist
-        medical_history = models.HistoricoMedico.objects.filter(pet = pet).first()
+        medical_history = models.HistoricoMedico.objects.filter(pet__pet_owner=pet_owner, pet__pet_id = pk).first()
         if medical_history is None:
             raise models.HistoricoMedico.DoesNotExist
+        
         return medical_history
     
     @action(detail=True, methods=['get'], url_name='get', url_path='get-by-pet')
@@ -108,16 +105,42 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     
+    def get_queryset(self):
+        pet_owner = self._get_petowner()
+        return models.VacinasAdministradas.objects.filter(historico_medico__pet__pet_owner = pet_owner)
+        
+    
     @action(detail=False, methods=['post'], url_name='add-vacina', url_path='add-vacina')
     def add_vacina(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             try:
-                serializer.save()
+                historico_medico_id = request.data.get('historico_medico')
                 
+                pet_owner = self._get_petowner()
+                historico_medico = models.HistoricoMedico.objects.filter(pet__pet_owner=pet_owner, historico_medico_id = historico_medico_id).first()
+                
+                if not historico_medico:
+                     return httputils.response_bad_request_400("Medical history not found.")
+                
+                serializer.save()
                 return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
             except Exception as e:
                 return httputils.response_bad_request_400(str(e))
+            
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['delete'], url_name="delete-vacina", url_path="delete-vacina")
+    def remove_vacina(self, request, pk: None):
+        try:
+            vacina_administrada = self.get_queryset().filter(vacinas_administradas_id = pk).first()
+            
+            if vacina_administrada is None:
+                return httputils.response_bad_request_400("Vacina not found.")
+            
+            vacina_administrada.delete()
+            return httputils.response("Vacina deleted.", status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return httputils.response_bad_request_400(str(e))
         
                
