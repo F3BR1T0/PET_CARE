@@ -25,6 +25,10 @@ class VacinaAdministradasSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.VacinasAdministradas
         fields = '__all__'
+class VacinaAdministradasUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.VacinasAdministradas
+        exclude = ('historico_medico',)
         
 class VermifugosAdministrados(serializers.ModelSerializer):
     class Meta:

@@ -7,6 +7,7 @@ from pet.api import serializers
 from pet import models
 from pet_owners.models import PetOwners
 from pet_care_backend.utils import HttpResponseUtils as httputils
+from pet_care_backend.utils import ResponseMixin
 
 class PetBaseViewSet(viewsets.GenericViewSet):
     def _get_petowner(self):
@@ -100,7 +101,7 @@ class PetMedicalHistoryViewSet(PetBaseViewSet):
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
     
-class PetMedicalHistoryVacinaViewSet(PetBaseViewSet):
+class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
     serializer_class = serializers.VacinaAdministradasSaveSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
@@ -108,6 +109,12 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet):
     def get_queryset(self):
         pet_owner = self._get_petowner()
         return models.VacinasAdministradas.objects.filter(historico_medico__pet__pet_owner = pet_owner)
+    
+    def get_serializer_class(self):
+        action_serializers = {
+            "update_vacina": serializers.VacinaAdministradasUpdateSerializer
+        }
+        return action_serializers.get(self.action, super().get_serializer_class())
         
     
     @action(detail=False, methods=['post'], url_name='add-vacina', url_path='add-vacina')
@@ -143,4 +150,16 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet):
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
         
+    @action(detail=True, methods=['put'], url_name='update-vacina')
+    def update_vacina(self, request, pk: None):
+        vacina_administrada = self.get_queryset().filter(vacinas_administradas_id = pk).first()
+        if not vacina_administrada:
+            return httputils.response('Vacina not found.', status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.get_serializer(instance=vacina_administrada, data = request.data)
+        
+        vacina_administrada_updated = self.handle_serializer_errors(serializer)
+        
+        if vacina_administrada_updated:
+            return httputils.response_as_json(serializers.VacinasAdministradasSerializer(vacina_administrada_updated).data, status.HTTP_202_ACCEPTED)
                

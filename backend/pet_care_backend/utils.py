@@ -15,3 +15,12 @@ class HttpResponseUtils:
     
     def response_bad_request_400(msg):
         return Response({'error': msg }, status.HTTP_400_BAD_REQUEST)
+    
+class ResponseMixin:
+    def handle_serializer_errors(self, serializer):
+        if serializer.is_valid(raise_exception=True):
+            try:
+                return serializer.save()
+            except Exception as e:
+                return HttpResponseUtils.response_bad_request_400(str(e))
+        return HttpResponseUtils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)

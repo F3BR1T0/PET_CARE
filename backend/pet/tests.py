@@ -120,6 +120,7 @@ class PetMedicalHistoryVacinaTestCase(PetApiTestBase):
         super().setUpTestData()
         # Adicionar uma vacina como exemplo
         cls.vacina = Vacinas.objects.create(nome="Vacina Exemplo")
+        cls.vacina2 = Vacinas.objects.create(nome="Vacina Exemplo Segundo")
 
     def test_add_vacina_administrada(self):
         # Registrar o pet
@@ -145,6 +146,46 @@ class PetMedicalHistoryVacinaTestCase(PetApiTestBase):
         self.assertEqual(VacinasAdministradas.objects.count(), 1)
         self.assertEqual(vacina_administrada.vacina.nome, self.vacina.nome)
         self.assertEqual(vacina_administrada.historico_medico.historico_medico_id, medical_history.historico_medico_id)
+    
+    def test_update_vacina_administrada(self):
+        # Registrar o pet
+        self.client.post(reverse('pets-register'), self.pet_data, format='json')
+        pet = Pet.objects.first()
+        medical_history = HistoricoMedico.objects.filter(pet=pet).first()
+        
+        # Adicionar a vacina administrada
+        vacina_data = {
+            "observacao": "Vacina administrada com sucesso",
+            "data_aplicacao": "2024-10-21T02:43:37.669Z",
+            "data_reforco": "2024-10-21T02:43:37.669Z",
+            "vacina": f"{self.vacina.vacina_id}",
+            "historico_medico": f"{medical_history.historico_medico_id}",
+        }
+        self.client.post(reverse('pets-medical-history-vacinas-add-vacina'), vacina_data, format="json")
+
+        # Verificar se a vacina foi adicionada corretamente
+        vacina_administrada = VacinasAdministradas.objects.first()
+        self.assertEqual(VacinasAdministradas.objects.count(), 1)
+        
+        # Nova data para a vacina administrada
+        vacina_new_data = {
+            "observacao": "Vacina administrada com sucesso EDITADA",
+            "data_aplicacao": "2024-10-21T02:43:37.669Z",
+            "data_reforco": "2024-10-21T02:43:37.669Z",
+            "vacina": f"{self.vacina2.vacina_id}",
+        }
+        
+        # Fazer a requisição PUT para atualizar a vacina
+        response = self.client.put(reverse('pets-medical-history-vacinas-update-vacina', args={vacina_administrada.vacinas_administradas_id}), vacina_new_data, format='json')
+        
+        # Verificar se a resposta foi 202 Accepted
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        
+        # Verificar se os dados foram atualizados corretamente
+        vacina_administrada.refresh_from_db()
+        self.assertEqual(vacina_administrada.observacao, vacina_new_data["observacao"])
+        self.assertEqual(vacina_administrada.vacina.nome, self.vacina2.nome)
+        
     
     def test_remove_vacina_administrada(self):
         # Registrar o pet
