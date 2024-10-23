@@ -10,7 +10,7 @@ class HttpResponseUtils:
     def response_as_json(json, statuscode=status.HTTP_200_OK):
         return Response(json, status=statuscode)
     
-    def response_empy(statuscode=status.HTTP_200_OK):
+    def response_empty(statuscode=status.HTTP_200_OK):
         return Response(status=statuscode)
     
     def response_bad_request_400(msg):
