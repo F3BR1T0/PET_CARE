@@ -147,9 +147,10 @@ class AccountAuthenticatedViewSet(viewsets.GenericViewSet, ResponseMixin):
     serializer_class = serializers.AccountUpdateSerializer
     
     def get_serializer_class(self):
-        if self.action == "change_password":
-            return serializers.AccountChangePasswordSerializer
-        return super().get_serializer_class()
+        action_serializers = {
+            "change_password": serializers.AccountChangePasswordSerializer
+        }
+        return action_serializers.get(self.action, super().get_serializer_class())
     
     @action(detail=False, methods=['get'], url_path="get-user-auth")
     def get_user_auth(self,request):
