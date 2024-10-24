@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework import status
-from pet.models import Pet, HistoricoMedico, Vacinas, VacinasAdministradas
+from pet.models import Pet, HistoricoMedico, Vacinas, VacinasAdministradas, Vermifugos, VermifugosAdministrados
 from pet_owners.models import PetOwners
 from account.models import AppAccount
 
@@ -139,6 +139,7 @@ class PetMedicalHistoryVacinaTestCase(PetApiTestBase):
 
         # Adicionar a vacina administrada
         response = self.client.post(reverse('pets-medical-history-vacinas-add-vacina'), vacina_data, format="json")
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Verificar se a vacina foi administrada corretamente
@@ -176,7 +177,7 @@ class PetMedicalHistoryVacinaTestCase(PetApiTestBase):
         }
         
         # Fazer a requisição PUT para atualizar a vacina
-        response = self.client.put(reverse('pets-medical-history-vacinas-update-vacina', args={vacina_administrada.vacinas_administradas_id}), vacina_new_data, format='json')
+        response = self.client.put(reverse('pets-medical-history-vacinas-update-vacina', args=[vacina_administrada.vacinas_administradas_id]), vacina_new_data, format='json')
         
         # Verificar se a resposta foi 202 Accepted
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
@@ -215,3 +216,56 @@ class PetMedicalHistoryVacinaTestCase(PetApiTestBase):
 
         # Verificar se a vacina foi removida do banco de dados
         self.assertEqual(VacinasAdministradas.objects.count(), 0)
+        
+class PetMedicalHistoryVermifugoTestCase(PetApiTestBase):
+    
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        # Criar um exemplo de vermífugo
+        cls.vermifugo = Vermifugos.objects.create(nome="Vermifugo Exemplo")
+
+    def test_add_vermifugo(self):
+        # Registrar o pet
+        self.client.post(reverse('pets-register'), self.pet_data, format='json')
+        pet = Pet.objects.first()
+        medical_history = HistoricoMedico.objects.filter(pet=pet).first()
+
+        # Definir os dados do vermífugo
+        vermifugo_data = {
+            "vermifugo": f"{self.vermifugo.vermifugo_id}",
+            "observacao": "Vermífugo administrado com sucesso",
+            "data_aplicacao": "2024-10-21T02:43:37.669Z",
+            "data_reforco": "2024-12-21T02:43:37.669Z",
+            "historico_medico": f"{medical_history.historico_medico_id}"
+        }
+
+        # Adicionar o vermífugo
+        response = self.client.post(reverse('pets-medical-history-vermifugos-add-vermifugo'), vermifugo_data, format="json")
+        
+        # Verificar se o vermífugo foi adicionado corretamente
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        # Verificar se o vermífugo foi salvo no banco de dados
+        vermifugo_administrado = VermifugosAdministrados.objects.first()
+        self.assertEqual(VermifugosAdministrados.objects.count(), 1)
+        self.assertEqual(vermifugo_administrado.historico_medico.historico_medico_id, medical_history.historico_medico_id)
+        self.assertEqual(vermifugo_administrado.observacao, vermifugo_data["observacao"])
+
+    def test_add_vermifugo_medical_history_not_found(self):
+        # Dados com um ID de histórico médico inválido
+        vermifugo_data = {
+            "observacao": "Vermífugo administrado com sucesso",
+            "vermifugo": f"{self.vermifugo.vermifugo_id}",
+            "data_aplicacao": "2024-10-21T02:43:37.669Z",
+            "data_reforco": "2024-12-21T02:43:37.669Z",
+            "historico_medico": "3b31dcb8-eecc-413f-88a5-2a9b96c34400"  # ID inválido
+        }
+
+        # Tentar adicionar o vermífugo com um histórico médico inválido
+        response = self.client.post(reverse('pets-medical-history-vermifugos-add-vermifugo'), vermifugo_data, format="json")
+        
+        # Verificar se o status HTTP 400 foi retornado
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Medical history not found.", response.data["error"])
+

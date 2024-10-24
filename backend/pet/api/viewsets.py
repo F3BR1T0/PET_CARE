@@ -11,6 +11,8 @@ from pet_care_backend.utils import ResponseMixin
 
 class PetBaseViewSet(viewsets.GenericViewSet):
     def _get_petowner(self):
+        if self.request.user == 'AnonymusUser':
+            raise Exception 
         petowner = PetOwners.objects.filter(email=self.request.user.email).first()
         if petowner is None:
             raise PetOwners.DoesNotExist
@@ -120,22 +122,19 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
     @action(detail=False, methods=['post'], url_name='add-vacina', url_path='add-vacina')
     def add_vacina(self, request):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            try:
-                historico_medico_id = request.data.get('historico_medico')
+        
+        historico_medico_id = request.data.get('historico_medico')
                 
-                pet_owner = self._get_petowner()
-                historico_medico = models.HistoricoMedico.objects.filter(pet__pet_owner=pet_owner, historico_medico_id = historico_medico_id).first()
-                
-                if not historico_medico:
-                     return httputils.response_bad_request_400("Medical history not found.")
-                
-                serializer.save()
-                return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
-            except Exception as e:
-                return httputils.response_bad_request_400(str(e))
+        pet_owner = self._get_petowner()
+        historico_medico = models.HistoricoMedico.objects.filter(pet__pet_owner=pet_owner, historico_medico_id = historico_medico_id).first()
+        
+        if not historico_medico:
+                return httputils.response_bad_request_400("Medical history not found.")
             
-        return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        vacina_added = self.handle_serializer_errors(serializer)
+        
+        if vacina_added:
+            return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
     
     @action(detail=True, methods=['delete'], url_name="delete-vacina", url_path="delete-vacina")
     def remove_vacina(self, request, pk: None):
@@ -162,4 +161,29 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
         
         if vacina_administrada_updated:
             return httputils.response_as_json(serializers.VacinasAdministradasSerializer(vacina_administrada_updated).data, status.HTTP_202_ACCEPTED)
-               
+
+class PetMedicalHistoriyVermifugoViewSet(PetBaseViewSet, ResponseMixin):
+    serializer_class = serializers.VermifugosAdministradasSaveSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    
+    def get_queryset(self):
+        pet_owner = self._get_petowner()
+        return models.VermifugosAdministrados.objects.filter(historico_medico__pet__pet_owner = pet_owner)
+    
+    @action(detail=False, methods=['post'], url_path='add-vermifugo')
+    def add_vermifugo(self, request):
+        serializer = self.get_serializer(data=request.data)
+        
+        historico_medico_id = request.data.get('historico_medico')
+            
+        pet_owner = self._get_petowner()
+        historico_medico = models.HistoricoMedico.objects.filter(pet__pet_owner=pet_owner, historico_medico_id = historico_medico_id).first()
+            
+        if not historico_medico:
+                return httputils.response_bad_request_400("Medical history not found.")
+        
+        vermifugo_added = self.handle_serializer_errors(serializer)
+        
+        if vermifugo_added:
+            return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)

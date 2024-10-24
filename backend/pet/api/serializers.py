@@ -29,8 +29,18 @@ class VacinaAdministradasUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.VacinasAdministradas
         exclude = ('historico_medico',)
-        
-class VermifugosAdministrados(serializers.ModelSerializer):
+
+class VermifugoSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = models.Vermifugos
+        exclude = ['vermifugo_id']      
+class VermifugosAdministradosSerializer(serializers.ModelSerializer):
+    vermifugo = VermifugoSerializer()
+    class Meta:
+        model = models.VermifugosAdministrados
+        fields = '__all__'
+
+class VermifugosAdministradasSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.VermifugosAdministrados
         fields = '__all__'

@@ -31,7 +31,7 @@ class Vacinas(models.Model):
     nome = models.CharField(max_length=255)
 
 class Vermifugos(models.Model):
-    vermifugos_id = models.URLField(primary_key=True, default=uuid4, editable=False)
+    vermifugo_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=255)
 
 class Doencas(models.Model):
