@@ -26,7 +26,7 @@ class PetApiTestBase(APITestCase):
             "peso": 12.5,
             "idade": 3,
             "sexo": "M",
-            "pet_owner": cls.owner.id_pet_owners
+            "pet_owner": cls.owner.id_pet_owner
         }
     
     def setUp(self):

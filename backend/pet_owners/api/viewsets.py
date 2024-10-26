@@ -17,6 +17,9 @@ from pet_care_backend.utils import HttpResponseUtils as httputils
 class PetOwnersViewSetBase(viewsets.GenericViewSet):
     UserModel = AppAccount
     
+    def get_queryset(self):
+        return models.PetOwners.objects.filter(email = self.request.user.email).first()
+    
     def _get_account(self):
         return self.UserModel.objects.filter(email=self.request.user.email).first()
     
@@ -27,9 +30,6 @@ class PetOwnersViewSet(PetOwnersViewSetBase):
     serializer_class = serializers.PetOwnerSaveSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
-    
-    def get_queryset(self):
-        return models.PetOwners.objects.filter(email=self.request.user.email).first()
     
     @action(detail=False, methods=['post'], url_path='register', url_name='register')
     def register(self,request):    
@@ -55,7 +55,7 @@ class PetOwnersViewSet(PetOwnersViewSetBase):
         
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=False, methods=['put'], url_name='update petowner', url_path='update-petowner')
+    @action(detail=False, methods=['put'], url_path='update')
     def update_petowner(self, request):
         serializer = self.get_serializer(data=request.data, instance=self.get_queryset())
         account = self._get_account()
@@ -72,8 +72,8 @@ class PetOwnersViewSet(PetOwnersViewSetBase):
                 return httputils.response_bad_request_400(str(e))
         return httputils.response_as_json(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=False, methods=['get'], url_name="get petowner", url_path='get-petowner')
-    def get_petowner(self, request):
+    @action(detail=False, methods=['get'], url_path='get')
+    def get(self, request):
         try:
             userpetowner = self.get_queryset()
             if userpetowner is None:
@@ -85,8 +85,8 @@ class PetOwnersViewSet(PetOwnersViewSetBase):
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
            
-    @action(detail=False, methods=['delete'], url_name='delete petowner', url_path='delete-petowner')
-    def delete_petowner(self, request):
+    @action(detail=False, methods=['delete'], url_path='delete')
+    def delete(self, request):
         user = self.get_queryset()
         if user is None:
             return httputils.response_bad_request_400("Pet owner not found")    
@@ -107,11 +107,8 @@ class PetOwnerAddressViewSet(PetOwnersViewSetBase):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     
-    def get_queryset(self):
-        return models.PetOwners.objects.filter(email = self.request.user.email).first()
-    
     @action(detail=False, methods=['post'], url_name="create address", url_path="create")
-    def register_address(self, request):
+    def create_address(self, request):
         serializer = self.serializer_class(data=request.data)
         petowner = self.get_queryset()
         
