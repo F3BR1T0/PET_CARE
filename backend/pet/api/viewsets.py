@@ -119,7 +119,7 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
         return action_serializers.get(self.action, super().get_serializer_class())
         
     
-    @action(detail=False, methods=['post'], url_name='add-vacina', url_path='add-vacina')
+    @action(detail=False, methods=['post'], url_name="add")
     def add_vacina(self, request):
         serializer = self.get_serializer(data=request.data)
         
@@ -136,7 +136,7 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
         if vacina_added:
             return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
     
-    @action(detail=True, methods=['delete'], url_name="delete-vacina", url_path="delete-vacina")
+    @action(detail=True, methods=['delete'], url_name="delete")
     def remove_vacina(self, request, pk: None):
         try:
             vacina_administrada = self.get_queryset().filter(vacinas_administradas_id = pk).first()
@@ -149,7 +149,7 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
         except Exception as e:
             return httputils.response_bad_request_400(str(e))
         
-    @action(detail=True, methods=['put'], url_name='update-vacina')
+    @action(detail=True, methods=['put'], url_name="update")
     def update_vacina(self, request, pk: None):
         vacina_administrada = self.get_queryset().filter(vacinas_administradas_id = pk).first()
         if not vacina_administrada:
@@ -163,7 +163,7 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
             return httputils.response_as_json(serializers.VacinasAdministradasSerializer(vacina_administrada_updated).data, status.HTTP_202_ACCEPTED)
 
 class PetMedicalHistoriyVermifugoViewSet(PetBaseViewSet, ResponseMixin):
-    serializer_class = serializers.VermifugosAdministradasSaveSerializer
+    serializer_class = serializers.VermifugosAdministradosSaveSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     
@@ -171,7 +171,13 @@ class PetMedicalHistoriyVermifugoViewSet(PetBaseViewSet, ResponseMixin):
         pet_owner = self._get_petowner()
         return models.VermifugosAdministrados.objects.filter(historico_medico__pet__pet_owner = pet_owner)
     
-    @action(detail=False, methods=['post'], url_path='add-vermifugo')
+    def get_serializer_class(self):
+        action_serializers = {
+            "update_vermifugo": serializers.VermifugosAdministradosUpdateSerializer
+        }
+        return action_serializers.get(self.action, super().get_serializer_class())
+    
+    @action(detail=False, methods=['post'], url_name="add")
     def add_vermifugo(self, request):
         serializer = self.get_serializer(data=request.data)
         
@@ -187,3 +193,27 @@ class PetMedicalHistoriyVermifugoViewSet(PetBaseViewSet, ResponseMixin):
         
         if vermifugo_added:
             return httputils.response_as_json(serializer.data, status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['put'], url_name="update")
+    def update_vermifugo(self, request, pk: None):
+        serializer = self.get_serializer(data=request.data, instance=self.get_queryset().filter(vermifugo_administrado_id = pk).first())
+        
+        vermifugo_updated = self.handle_serializer_errors(serializer)
+        
+        if vermifugo_updated:
+            return httputils.response_as_json(serializers.VermifugosAdministradosSerializer(vermifugo_updated).data, status.HTTP_202_ACCEPTED)
+        
+    @action(detail=True, methods=['delete'], url_name="delete")
+    def delete_vermifugo(self, request, pk: None):
+        try:
+            vermifugo = self.get_queryset().filter(vermifugo_administrado_id = pk).first()
+        
+            if not vermifugo:
+                return httputils.response_bad_request_400("Vermifugo not found.")
+            
+            vermifugo.delete()
+            
+            return httputils.response("Vermifugo deleted.", status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return httputils.response_bad_request_400(str(e))
+    

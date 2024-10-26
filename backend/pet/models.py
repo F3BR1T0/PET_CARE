@@ -49,7 +49,7 @@ class VacinasAdministradas(models.Model):
     data_reforco = models.DateTimeField(null=True, blank=True)
 
 class VermifugosAdministrados(models.Model):
-    vermifugos_administrados_id = models.URLField(primary_key=True, default=uuid4, editable=False)
+    vermifugo_administrado_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
     vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE, related_name='vermifugos_admistrados')
     observacao = models.TextField(null=True)
