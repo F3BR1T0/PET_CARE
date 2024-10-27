@@ -110,7 +110,7 @@ class PetMedicalHistoryVacinaViewSet(PetBaseViewSet, ResponseMixin):
     
     def get_queryset(self):
         pet_owner = self._get_petowner()
-        return models.VacinasAdministradas.objects.filter(historico_medico__pet__pet_owner = pet_owner)
+        return models.VacinaAdministrada.objects.filter(historico_medico__pet__pet_owner = pet_owner)
     
     def get_serializer_class(self):
         action_serializers = {
@@ -169,7 +169,7 @@ class PetMedicalHistoriyVermifugoViewSet(PetBaseViewSet, ResponseMixin):
     
     def get_queryset(self):
         pet_owner = self._get_petowner()
-        return models.VermifugosAdministrados.objects.filter(historico_medico__pet__pet_owner = pet_owner)
+        return models.VermifugoAdministrado.objects.filter(historico_medico__pet__pet_owner = pet_owner)
     
     def get_serializer_class(self):
         action_serializers = {

@@ -26,37 +26,37 @@ class HistoricoMedico(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-class Vacinas(models.Model):
+class Vacina(models.Model):
     vacina_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=255)
 
-class Vermifugos(models.Model):
+class Vermifugo(models.Model):
     vermifugo_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=255)
 
-class Doencas(models.Model):
-    doencas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+class Doenca(models.Model):
+    doenca_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     nome = models.CharField(max_length=100)
     descricao = models.TextField(null=True)
     sintomas = models.TextField()
     
-class VacinasAdministradas(models.Model):
+class VacinaAdministrada(models.Model):
     vacinas_administradas_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='vacinas_administradas')
-    vacina = models.ForeignKey(Vacinas, on_delete=models.CASCADE)
+    vacina = models.ForeignKey(Vacina, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
     data_reforco = models.DateTimeField(null=True, blank=True)
 
-class VermifugosAdministrados(models.Model):
+class VermifugoAdministrado(models.Model):
     vermifugo_administrado_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
-    vermifugo = models.ForeignKey(Vermifugos, on_delete=models.CASCADE, related_name='vermifugos_admistrados')
+    vermifugo = models.ForeignKey(Vermifugo, on_delete=models.CASCADE, related_name='vermifugos_admistrados')
     observacao = models.TextField(null=True)
     data_aplicacao = models.DateTimeField()
     data_reforco = models.DateTimeField(null=True, blank=True)
 
-class DoencasDocumentadas(models.Model):
+class DoencaDocumentada(models.Model):
     STATUS_CHOICES = [
         ('em_tratamento', 'Em tratamento'),
         ('curado', 'Curado'),
@@ -66,7 +66,7 @@ class DoencasDocumentadas(models.Model):
     
     doencas_documentadas_id = models.URLField(primary_key=True, default=uuid4, editable=False)
     historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='doencas_administradas')
-    doenca = models.ForeignKey(Doencas, on_delete=models.CASCADE)
+    doenca = models.ForeignKey(Doenca, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_diagnostico = models.DateTimeField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)

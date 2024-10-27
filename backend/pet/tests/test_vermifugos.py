@@ -1,6 +1,6 @@
 from rest_framework import status
 from django.urls import reverse
-from pet.models import Pet, HistoricoMedico, VermifugosAdministrados, Vermifugos
+from pet.models import Pet, HistoricoMedico, VermifugoAdministrado, Vermifugo
 from .test_base import PetApiTestBase
 
 class PetMedicalHistoriyVermifugoTestCase(PetApiTestBase):
@@ -8,8 +8,8 @@ class PetMedicalHistoriyVermifugoTestCase(PetApiTestBase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.vermifugo = Vermifugos.objects.create(nome="Vermifugo Exemplo")
-        cls.vermifugo2 = Vermifugos.objects.create(nome="Vermifugo Exemplo Segundo")
+        cls.vermifugo = Vermifugo.objects.create(nome="Vermifugo Exemplo")
+        cls.vermifugo2 = Vermifugo.objects.create(nome="Vermifugo Exemplo Segundo")
     
     def test_add_vermifugo(self):
         self.client.post(reverse('pets-register'), self.pet_data, format='json')
@@ -26,7 +26,7 @@ class PetMedicalHistoriyVermifugoTestCase(PetApiTestBase):
         response = self.client.post(reverse('pets-medical-history-vermifugos-add'), vermifugo_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        vermifugo_administrado = VermifugosAdministrados.objects.first()
+        vermifugo_administrado = VermifugoAdministrado.objects.first()
         self.assertEqual(vermifugo_administrado.historico_medico.historico_medico_id, medical_history.historico_medico_id)
     
     def test_update_vermifugo(self):
@@ -43,7 +43,7 @@ class PetMedicalHistoriyVermifugoTestCase(PetApiTestBase):
 
         self.client.post(reverse('pets-medical-history-vermifugos-add'), vermifugo_data, format="json")
         
-        vermifugo_added = VermifugosAdministrados.objects.first()
+        vermifugo_added = VermifugoAdministrado.objects.first()
         
         vermifugo_data = {
             "observacao": "Vermífugo administrado com sucesso UPDATED",
@@ -73,8 +73,8 @@ class PetMedicalHistoriyVermifugoTestCase(PetApiTestBase):
 
         self.client.post(reverse('pets-medical-history-vermifugos-add'), vermifugo_data, format="json")
         
-        vermifugo_added = VermifugosAdministrados.objects.first()
+        vermifugo_added = VermifugoAdministrado.objects.first()
     
-        response = self.client.delete(reverse('pets-medical-history-vermifugos-delete', args=[vermifugo_added.vermifugo_administrado_id]), format='json')
+        self.client.delete(reverse('pets-medical-history-vermifugos-delete', args=[vermifugo_added.vermifugo_administrado_id]), format='json')
         
-        self.assertEqual(VermifugosAdministrados.objects.count(), 0)
+        self.assertEqual(VermifugoAdministrado.objects.count(), 0)

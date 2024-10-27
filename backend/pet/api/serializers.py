@@ -23,45 +23,45 @@ class PetSaveSerializer(BaseExcludeOwnerSerializer):
 
 class VacinaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Vacinas
+        model = models.Vacina
         exclude = ['vacina_id']
 
 class VacinasAdministradasSerializer(BaseSerializer):
     vacina = VacinaSerializer()
     class Meta(BaseSerializer.Meta):
-        model = models.VacinasAdministradas
+        model = models.VacinaAdministrada
 
 class VacinaAdministradasSaveSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
-        model = models.VacinasAdministradas
+        model = models.VacinaAdministrada
 
 class VacinaAdministradasUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.VacinasAdministradas
+        model = models.VacinaAdministrada
         exclude = ('historico_medico',)
 
 class VermifugoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Vermifugos
+        model = models.Vermifugo
         exclude = ['vermifugo_id']
 
 class VermifugosAdministradosSerializer(BaseSerializer):
     vermifugo = VermifugoSerializer()
     class Meta(BaseSerializer.Meta):
-        model = models.VermifugosAdministrados
+        model = models.VermifugoAdministrado
 
 class VermifugosAdministradosSaveSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
-        model = models.VermifugosAdministrados
+        model = models.VermifugoAdministrado
 
 class VermifugosAdministradosUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.VermifugosAdministrados
+        model = models.VermifugoAdministrado
         exclude = ['historico_medico']
 
 class DoencasDocumentadasSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
-        model = models.DoencasDocumentadas
+        model = models.DoencaDocumentada
 
 class CirurgiaSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
