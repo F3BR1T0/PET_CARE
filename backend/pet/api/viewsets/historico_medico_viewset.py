@@ -1,11 +1,13 @@
 from .base_viewset import *
-from pet_care_backend.utils import HttpResponseUtils as http
 from ...models import HistoricoMedico, Pet
-from ..serializers.historico_medico_serializer import HistoricoMedicoSerializer
+from ..serializers.historico_medico_serializer import HistoricoMedicoSerializer, HistoricoMedicoUpdateSerializer
 
-class PetHistoricoMedicoViewSet(PetBaseViewSet, mixins.RetrieveModelMixin):
+class PetHistoricoMedicoViewSet(PetBaseViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     def get_serializer_class(self):
-        return HistoricoMedicoSerializer
+        action_serializers = {
+            "update": HistoricoMedicoUpdateSerializer
+        }
+        return action_serializers.get(self.action, HistoricoMedicoSerializer)
     
     def get_queryset(self):
         petowner = self._get_petowner()

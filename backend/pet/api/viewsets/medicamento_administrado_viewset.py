@@ -14,12 +14,7 @@ class MedicamentoAdministradoBaseViewSet(PetBaseViewSet, ResponseMixin):
 
         # Filtra os medicamentos administrados que estão associados a esses históricos médicos
         return MedicamentoAdministrado.objects.filter(historico_medico_id__in=historico_ids)
-    
-
-class MedicamentoAdministradoViewSet(MedicamentoAdministradoBaseViewSet, mixins.RetrieveModelMixin):
-    def get_serializer_class(self):
-        return MedicamentoAdministradoSerializer
-    
+        
 class MedicamentoAdministradoVacinaViewSet(MedicamentoAdministradoBaseViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
     def get_serializer_class(self):
        return MedicamentoAdministradoVacinaSerializer

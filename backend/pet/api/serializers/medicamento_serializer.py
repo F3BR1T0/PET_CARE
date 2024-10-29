@@ -1,6 +1,6 @@
 from .base_serializer import *
 from .vacina_serializer import VacinaSerializer
-from .vermifugo_serializer import VermifugoSerialzier
+from .vermifugo_serializer import VermifugoSerializer
 from ...models import MedicamentoAdministrado
 
 class MedicamentoAdministradoExcludeSerializer(SerializerUtils.BaseModelExcludeSerializer):
@@ -9,7 +9,7 @@ class MedicamentoAdministradoExcludeSerializer(SerializerUtils.BaseModelExcludeS
 
 class MedicamentoAdministradoSerializer(SerializerUtils.BaseModelSerializer):
     vacina = VacinaSerializer(read_only=True)
-    vermifugo = VermifugoSerialzier(read_only=True)
+    vermifugo = VermifugoSerializer(read_only=True)
     class Meta(SerializerUtils.BaseModelSerializer.Meta):
         model = MedicamentoAdministrado
         

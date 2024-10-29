@@ -43,7 +43,7 @@ class Doenca(Base):
 
 class MedicamentoAdministrado(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE)
+    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name="medicamentos_administrados")
     vacina = models.ForeignKey(Vacina, on_delete=models.CASCADE, null=True, blank=True)
     vermifugo = models.ForeignKey(Vermifugo, on_delete=models.CASCADE, null=True, blank=True)
     observacao = models.TextField(null=True)
@@ -59,7 +59,7 @@ class DoencaDocumentada(models.Model):
     ]
     
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='doencas_administradas')
+    historico_medico = models.ForeignKey(HistoricoMedico, on_delete=models.CASCADE, related_name='doencas_documentadas')
     doenca = models.ForeignKey(Doenca, on_delete=models.CASCADE)
     observacao = models.TextField(null=True)
     data_diagnostico = models.DateTimeField()
