@@ -1,22 +1,30 @@
 from rest_framework import serializers
+from pet_care_backend.utils import SerializerUtils
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
 UserModel = get_user_model()
 
-class AccountSerializer(serializers.ModelSerializer):
-    class Meta:
+class AccountBaseModelSerializer(SerializerUtils.BaseModelSerializer):
+    class Meta(SerializerUtils.BaseModelSerializer.Meta):
         model = UserModel
-        fields = '__all__'
+
+class AccountSerializer(AccountBaseModelSerializer):
+    class Meta(AccountBaseModelSerializer.Meta):
+        pass
         
-class AccountRegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
+class AccountCreateSerializer(AccountBaseModelSerializer):
+    class Meta(AccountBaseModelSerializer.Meta):
         fields = ('email', 'username', 'password')
+        
     def create(self, data):
         user = UserModel.objects.create_user(email=data['email'], username=data['username'], password=data['password'])
         user.save()
         return user
+    
+class AccountUpdateSerializer(AccountBaseModelSerializer):
+    class Meta(AccountBaseModelSerializer.Meta):
+        fields = ('username','email')
 
 class AccountLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -32,15 +40,9 @@ class AccountRequestPasswordResetSerializer(serializers.Serializer):
     
     def get_user(self):
         return UserModel.objects.get(email=self.validated_data.get('email'))
-
-class AccountUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
-        fields = ('username','email')
     
-class AccountChangePasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
+class AccountChangePasswordSerializer(AccountBaseModelSerializer):
+    class Meta(AccountBaseModelSerializer.Meta):
         fields = ('password',)    
     
     def update(self, instance, validated_data):

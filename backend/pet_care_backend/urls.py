@@ -27,17 +27,18 @@ from pet.api import viewsets as petviewsets
 
 route = routers.DefaultRouter()
 
-route.register(r'pets', petviewsets.PetViewSet, basename="pets")
-route.register(r'pets/medicalhistory', petviewsets.PetMedicalHistoryViewSet, basename="pets-medical-history")
-route.register(r'pets/medicalhistory/vacinas', petviewsets.PetMedicalHistoryVacinaViewSet, basename="pets-medical-history-vacinas")
-route.register(r'pets/medicalhistory/vermifugos', petviewsets.PetMedicalHistoriyVermifugoViewSet, basename="pets-medical-history-vermifugos")
-route.register(r'petowners', petownerviewsets.PetOwnersViewSet , basename="PetOwner")
-route.register(r'petowners/address', petownerviewsets.PetOwnerAddressViewSet, basename="PetOwner address")
-route.register(r'private/petowners', petownerviewsets.PetOwnersAdminViewSet, basename="PetOwner admin")
-route.register(r'petowners/extra', petownerviewsets.PetOwnersExtraViewSet, basename="PetOwner extra")
 route.register(r'accounts/public', accountviewsets.AccountNotAuthenticatedViewSet, basename='accountnotauthenticated')
 route.register(r'accounts/auth', accountviewsets.AccountAuthenticatedViewSet, basename='accountauthenticated')
-route.register(r'private/accounts', accountviewsets.AccountAdminViewSet, basename="Account admin")
+route.register(r'pets', petviewsets.PetViewSet, basename="pets")
+route.register(r'pets/medicalhistory', petviewsets.PetHistoricoMedicoViewSet, basename="pets-medical-history")
+route.register(r'pets/medicalhistory/medicine', petviewsets.MedicamentoAdministradoViewSet, basename="pets-medical-history-medicine")
+route.register(r'pets/medicalhistory/medicine/vaccine', petviewsets.MedicamentoAdministradoVacinaViewSet, basename="pets-medical-history-medicine-vaccine")
+route.register(r'pets/medicalhistory/medicine/vermifuge', petviewsets.MedicamentoAdministradoVermifugoViewSet, basename="pets-medical-history-medicine-vermifuge")
+route.register(r'pets/medicalhistory/Illness', petviewsets.DoencaDocumentadaViewSet, basename="pets-medical-history-Illness")
+route.register(r'pets/medicalhistory/surgery', petviewsets.CirurgiaViewSet, basename="pets-medical-history-surgery")
+route.register(r'petowners', petownerviewsets.PetOwnerViewSet , basename="petowner")
+route.register(r'petowners/address', petownerviewsets.PetOwnerAddressViewSet, basename="petowner-address")
+route.register(r'petowners/extra', petownerviewsets.PetOwnerExtraViewSet, basename="petowner-extra")
 
 schema_view = get_schema_view(
     openapi.Info(
