@@ -12,7 +12,3 @@ class CirurgiaViewSet(PetBaseViewSet, mixins.CreateModelMixin, mixins.UpdateMode
     
     def get_serializer_class(self):
         return CirurgiaSerializer
-    
-    def create(self, request, *args, **kwargs):
-        print(self.action)
-        return super().create(request, *args, **kwargs)
