@@ -1,0 +1,47 @@
+[
+    {
+        "model": "pet.doenca",
+        "pk": "c233af23-e8b5-4e77-8bc4-f12a0a4f8dc9",
+        "fields": {
+            "nome": "Cinomose",
+            "descricao": "Doença viral altamente contagiosa que afeta cães.",
+            "sintomas": "Febre, tosse, secreção ocular e nasal, vômitos, diarreia."
+        }
+    },
+    {
+        "model": "pet.doenca",
+        "pk": "e3487f4d-00ba-48e7-a96b-9c3fc4e5058e",
+        "fields": {
+            "nome": "Parvovirose",
+            "descricao": "Infecção viral aguda que causa gastroenterite em cães.",
+            "sintomas": "Vômitos, diarreia sanguinolenta, desidratação, letargia."
+        }
+    },
+    {
+        "model": "pet.doenca",
+        "pk": "a44bb231-5b5f-45fa-b3cd-6a2b746b8fa2",
+        "fields": {
+            "nome": "Leptospirose",
+            "descricao": "Doença bacteriana transmitida por água contaminada e urina de animais.",
+            "sintomas": "Febre, dor abdominal, vômitos, icterícia."
+        }
+    },
+    {
+        "model": "pet.doenca",
+        "pk": "c987ef22-3268-4c96-a6f0-d86a7e47b3fe",
+        "fields": {
+            "nome": "Raiva",
+            "descricao": "Doença viral grave que afeta o sistema nervoso central dos mamíferos.",
+            "sintomas": "Mudanças de comportamento, febre, salivação excessiva, paralisia."
+        }
+    },
+    {
+        "model": "pet.doenca",
+        "pk": "b32a78d7-f434-4979-9145-0f5a37b07edb",
+        "fields": {
+            "nome": "Coronavírus Canino",
+            "descricao": "Infecção viral que causa diarreia em cães.",
+            "sintomas": "Diarreia, vômitos, letargia e perda de apetite."
+        }
+    }
+]

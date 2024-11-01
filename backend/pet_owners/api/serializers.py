@@ -1,19 +1,19 @@
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from pet_owners import models
-from account.models import AppAccount
+from ..models import PetOwner
 from address.api.serializers import AddressSerializer
 
-UserModel = AppAccount
+from pet_care_backend.utils import SerializerUtils
 
-class PetOwnersSerializer(serializers.ModelSerializer):
+class PetOwnerSerializer(SerializerUtils.BaseModelSerializer):
     address = AddressSerializer(read_only=True)
-    class Meta:
-        model = models.PetOwners
-        fields = '__all__'
-class PetOwnerSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.PetOwners
-        exclude = ['address']
-class PetOwnersOnlyEmailSerializer(serializers.Serializer):
+    class Meta(SerializerUtils.BaseModelSerializer.Meta):
+        model = PetOwner
+        
+class PetOwnerCreateUpdateSerializer(SerializerUtils.BaseModelExcludeSerializer):
+    class Meta(SerializerUtils.BaseModelExcludeSerializer.Meta):
+        model = PetOwner
+        exclude = ['endereco']
+        
+class PetOwnerEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
