@@ -1,0 +1,23 @@
+[
+    {
+        "model": "petcare.Illness_status",
+        "pk": 1,
+        "fields": {
+            "status": "Em Tratamento"
+        }
+    },
+    {
+        "model": "petcare.Illness_status",
+        "pk": 2,
+        "fields": {
+            "status": "Recuperado"
+        }
+    },
+    {
+        "model": "petcare.Illness_status",
+        "pk": 3,
+        "fields": {
+            "status": "Crônico"
+        }
+    }
+]

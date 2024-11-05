@@ -1,8 +1,0 @@
-python -m venv venv (caso queira um ambiente virtual)
-.venv/Scripts/activate (para entrar no ambiente virtual)
-
-pip install -r libs.txt
-
-python manage.py loaddata vacinas_fixture.json
-python manage.py loaddata vermifugos_fixture.json
-python manage.py loaddata doencas_fixture.json
