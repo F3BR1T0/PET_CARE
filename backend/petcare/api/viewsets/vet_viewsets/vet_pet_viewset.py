@@ -12,7 +12,7 @@ class VetPetViewSet(VetPetBaseVewSet, mixins.RetrieveModelMixin):
     def get_serializer_class(self):
         return PetDetailSerializer
     
-class VetPetMedicineViewSet(VetPetBaseVewSet, mixins.RetrieveModelMixin):
+class VetPetMedicineViewSet(VetPetBaseVewSet):
      
     def get_serializer_class(self):
         return MedicineSaveSerializer
@@ -39,11 +39,7 @@ class VetPetMedicineDetailsViewSet(VetPetBaseVewSet, mixins.UpdateModelMixin, mi
     
     def get_queryset(self):
         return Medicine
-    
-    
-        
-        
-        
-        
+
+
 
     
