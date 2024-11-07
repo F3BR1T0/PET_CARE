@@ -12,3 +12,5 @@ route.register(r'vet', VetNotAuthenticatedViewSet, basename="vet-notauthenticate
 route.register(r'vet', VetViewSet, basename="vet")
 route.register(r'vet/clinic', VetClinicViewSet, basename="vet-clinic")
 route.register(r'vet/pets', VetPetViewSet, basename="vet-pets")
+route.register(r'vet/pets',VetPetMedicineViewSet, basename="vet-pets-medicine")
+route.register(r'vet/medicines', VetPetMedicineDetailsViewSet, basename="vet-medicine")
