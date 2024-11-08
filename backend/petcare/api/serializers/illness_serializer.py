@@ -6,7 +6,11 @@ class IllnessStatusSerializer(BaseModelSerializer):
         model = IllnessStatus
         
         
-class IllnessSerializr(serializers.ModelSerializer):
-    class Meta(serializers.ModelSerializer):
+class IllnessSerializer(BaseModelExcludeSerializer):
+    illness_status = IllnessStatusSerializer(read_only=True)
+    class Meta(BaseModelExcludeSerializer.Meta):
         model = Illness
-        exclude = ('medical_history',)
+        
+class IllnessSaveSerializer(BaseModelExcludeSerializer):
+    class Meta(BaseModelExcludeSerializer.Meta):
+        model = Illness
