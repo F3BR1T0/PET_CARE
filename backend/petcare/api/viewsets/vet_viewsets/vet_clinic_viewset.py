@@ -1,10 +1,10 @@
 from .base_vet_viewset import *
 from ....models import Clinic
-from ...serializers import ClinicUpdateSerializer, AddressSerializer
+from ...serializers import ClinicSerializer, AddressSerializer
 
 class VetClinicViewSet(BaseVetAuthenticatedViewSet, mixins.UpdateModelMixin, mixins.RetrieveModelMixin):
     def get_serializer_class(self):
-        return ClinicUpdateSerializer
+        return ClinicSerializer
     
     def get_queryset(self):
         return Clinic.objects.filter(id = self._get_vet_authenticated().clinic.id)

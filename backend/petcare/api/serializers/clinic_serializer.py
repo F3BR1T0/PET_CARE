@@ -9,7 +9,7 @@ class ClinicAndVetSaveSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
         model = Clinic
 
-class ClinicUpdateSerializer(BaseModelSerializer):
+class ClinicSerializer(BaseModelSerializer):
     address = AddressSerializer(read_only=True)
     class Meta(BaseModelSerializer.Meta):
         model = Clinic
