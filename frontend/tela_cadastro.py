@@ -9,26 +9,35 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.bgcolor = "#1B003A"  # Fundo roxo escuro para destaque neon
 
-    # Logo reduzido com ajuste de efeito neon
-    logo = ft.Image(
-        src=r"assets/_IMG_PET_CARE/675ac9488896439ba6af16592ae468dc.png",
-        fit=ft.ImageFit.CONTAIN,
+    # Logo em miniatura com estilo neon
+    logo = ft.Container(
+        content=ft.Image(
+            src=r"../_IMG_PET_CARE/675ac9488896439ba6af16592ae468dc.png",
+            fit=ft.ImageFit.CONTAIN,
+            width=50,
+            height=50,
+        ),
         width=50,
         height=50,
+        border_radius=25,  # Circular
+        clip_behavior=ft.ClipBehavior.HARD_EDGE,
+        alignment=ft.alignment.center
     )
 
-    # Título com efeito neon
+    # Título "Cadastros" com efeito neon
     title = ft.Text(
         "Cadastros",
         size=36,
         weight=ft.FontWeight.BOLD,
         color="#DDA0DD",  # Roxo neon claro
         text_align=ft.TextAlign.CENTER,
-        style=ft.TextStyle(shadow=ft.BoxShadow(
+        style=ft.TextStyle(
+            shadow=ft.BoxShadow(
                 color="#DDA0DD",
                 blur_radius=10,
+                spread_radius=5,
                 offset=ft.Offset(0, 0)
-            ),
+            )
         )
     )
 
@@ -38,11 +47,13 @@ def main(page: ft.Page):
         size=18,
         color="#BB86FC",
         text_align=ft.TextAlign.CENTER,
-        style=ft.TextStyle(shadow=ft.BoxShadow(
+        style=ft.TextStyle(
+            shadow=ft.BoxShadow(
                 color="#BB86FC",
                 blur_radius=6,
+                spread_radius=3,
                 offset=ft.Offset(0, 0)
-            ),
+            )
         )
     )
 
@@ -60,7 +71,6 @@ def main(page: ft.Page):
             shadow_color="#8A2BE2",
             elevation=10,
         ),
-        # animate=ft.Animation(duration=400, curve=ft.AnimationCurve.EASE_IN_OUT),
     )
 
     # Botão "Cadastrar Veterinário" com estilo neon
@@ -77,11 +87,10 @@ def main(page: ft.Page):
             shadow_color="#8A2BE2",
             elevation=10,
         ),
-        # animate=ft.Animation(duration=400, curve=ft.AnimationCurve.EASE_IN_OUT),
     )
 
     # Fila para CPF e botão de cadastro de usuário
-    row_sgnup_user = ft.Row(
+    row_signup_user = ft.Row(
         [
             ft.Text('CPF:', color="#BB86FC", size=16, weight=ft.FontWeight.BOLD),
             sign_up_user
@@ -91,7 +100,7 @@ def main(page: ft.Page):
     )
 
     # Fila para CRMV e botão de cadastro de veterinário
-    row_sgnup_vet = ft.Row(
+    row_signup_vet = ft.Row(
         [
             ft.Text('CRMV:', color="#BB86FC", size=16, weight=ft.FontWeight.BOLD),
             sign_up_vet
@@ -101,34 +110,50 @@ def main(page: ft.Page):
     )
 
     # Botão "Anterior" com efeito neon
-    prev_button = obter_prev_button(140)
-    prev_button.style = ft.ButtonStyle(
-        shape=ft.RoundedRectangleBorder(radius=12),
-        bgcolor="#FF8A65",
-        color=ft.colors.WHITE,
-        shadow_color="#FF8A65",
-        elevation=10,
+    back_button = ft.ElevatedButton(
+        content=ft.Row(
+            controls=[
+                ft.Icon(name="arrow_back", color="#FFFFFF"),
+                ft.Text("Voltar", color="#FFFFFF")
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=8
+        ),
+        on_click=lambda e: print("Voltar clicado"),
+        width=160,
+        height=45,
+        style=ft.ButtonStyle(
+            bgcolor="#FF8A65",  # Laranja neon suave
+            shadow_color="#FF8A65",
+            elevation=10,
+            overlay_color=ft.colors.with_opacity(0.2, ft.colors.WHITE),
+            shape=ft.RoundedRectangleBorder(radius=12),
+        ),
     )
 
-    # Layout principal com alinhamento
+    # Layout principal com alinhamento e espaçamento uniforme
     page.add(
         ft.Column(
             [
+                # Cabeçalho com logo e título
                 ft.Row(
                     controls=[
-                        ft.Container(content=logo, alignment=ft.alignment.center, padding=ft.padding.only(right=10)),
+                        logo,
                         title
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                 ),
-                ft.Container(subtitle, alignment=ft.alignment.center, padding=ft.padding.only(bottom=20)),
-                row_sgnup_user,
-                row_sgnup_vet,
-                ft.Container(prev_button, padding=ft.padding.only(top=20))
+                # Subtítulo
+                ft.Container(content=subtitle, alignment=ft.alignment.center, padding=ft.padding.only(bottom=20)),
+                # Linhas para cadastro de usuário e veterinário
+                row_signup_user,
+                row_signup_vet,
+                # Botão "Voltar"
+                ft.Container(content=back_button, padding=ft.padding.only(top=30))
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            spacing=12,
+            spacing=15,  # Espaçamento uniforme entre os elementos
         )
     )
 
