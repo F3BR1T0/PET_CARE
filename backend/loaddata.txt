@@ -1,3 +1,0 @@
-python manage.py loaddata vacinas_fixture.json
-python manage.py loaddata vermifugos_fixture.json
-python manage.py loaddata doencas_fixture.json
