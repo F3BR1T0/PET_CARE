@@ -15,7 +15,7 @@ class OwnerViewSet(BaseOwnerAuthenticatedViewSet, mixins.CreateModelMixin, mixin
     
         serializer.is_valid(raise_exception=True)    
         
-        owner_saved = serializer.save(account = self._get_user())
+        owner_saved = serializer.save(account = self._get_user_authenticated())
         
         if owner_saved:
             return Response(serializer.data,status.HTTP_201_CREATED)
