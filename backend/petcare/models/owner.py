@@ -2,6 +2,7 @@ from django.db import models
 from .address import Address
 from authentication.models import Account
 from uuid import uuid4
+import os
 
 def upload_image(instance, filename):
     return f'images/{instance.id}-{filename}'
@@ -16,7 +17,17 @@ class Owner(models.Model):
     occupation = models.CharField(max_length=255)
     account = models.OneToOneField(Account,on_delete=models.CASCADE, null=True)
     
-    def delete(self):
+    def save(self, *args, **kwargs):
+        if self.id:
+            old_image = Owner.objects.filter(id=self.id).first()
+            if old_image and old_image.photo != self.photo:
+                old_image.photo.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.photo:
+            self.photo.delete(save=False)
         if self.address:
             self.address.delete()
-        return super().delete(self)
+        super().delete(*args, **kwargs)
