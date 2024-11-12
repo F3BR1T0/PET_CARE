@@ -1,4 +1,4 @@
-from .owner_serializer import OwnerSaveSerializer, OwnerSerializer
+from .owner_serializer import OwnerSaveSerializer, OwnerSerializer, OwnerSaveWithMiranteSerializer
 from .address_serializer import AddressSerializer
 from .pet_serializer import PetSerializer, PetSaveSerializer, PetDetailSerializer
 from .medical_history_serializer import MedicalHistorySerializer

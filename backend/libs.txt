@@ -4,3 +4,4 @@ drf-yasg
 python-decouple
 setuptools
 Pillow
+requests

@@ -13,5 +13,10 @@ class OwnerSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
         exclude = ['address','account']
+
+class OwnerSaveWithMiranteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Owner
+        exclude = ['address','account', 'phone','photo',]
         
     

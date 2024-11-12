@@ -17,3 +17,6 @@ route.register(r'vet/pets/medicines', VetPetMedicineDetailsViewSet, basename="ve
 route.register(r'vet/pets/illness', VetPetIllnessDetailsViewSet, basename="vet-illness")
 route.register(r'vet/pets/surgery', VetPetSurgeryDetailsViewSet, basename="vet-surgery")
 route.register(r'vet/pets/consultation', VetPetConsultationDetailsViewSet, basename="vet-consultation")
+
+
+route.register(r'mirante', MiranteViewSet, basename="mirate")
