@@ -129,6 +129,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Customize
 
+AUTHENTICATION_BACKENDS = [
+    'authentication.api.custom_auth.EmailAuthBackend',
+]
+
 AUTH_USER_MODEL = 'authentication.Account'
 
 MEDIA_URL = '/media/'
