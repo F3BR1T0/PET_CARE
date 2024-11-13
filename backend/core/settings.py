@@ -138,8 +138,7 @@ AUTH_USER_MODEL = 'authentication.Account'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-JUNO_LOGIN = 'http://10.120.74.108:3031/rpc/login'
-JUNO_FIND = 'http://10.120.74.108:3031/rpc/rgpet'
-
-JUNO_EMAIL = 'rgpet@mirante.jutty.dev'
-JUNO_PASSWORD = 'nZmZm8BgA'
+MIRANTE_AUTHENTICATE = 'http://10.120.74.108:3031/rpc/login'
+MIRATE_ROUTE_USERS = 'http://10.120.74.108:3031/rpc/rgpet'
+MIRANTE_CREDENTIALS_LOGIN_EMAIL = 'rgpet@mirante.jutty.dev'
+MIRANTE_CREDENTIALS_LOGIN_PASSWORD = 'nZmZm8BgA'
