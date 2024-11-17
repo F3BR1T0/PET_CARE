@@ -4,6 +4,7 @@ from django.conf import settings
 from ...serializers import OwnerSaveWithMiranteSerializer, AddressSerializer
 
 class MiranteViewSet(BaseAuthenticatedViewSet, viewsets.ViewSet):    
+    serializer_class = OwnerSaveWithMiranteSerializer
     @action(detail=False, methods=['post'], url_path="create-with-mirante")
     def create_with_mirante(self, request):
         try:

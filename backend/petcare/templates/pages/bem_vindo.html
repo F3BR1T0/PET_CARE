@@ -1,62 +1,75 @@
-<!-- bem_vindo.html -->
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo!</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #4CAF50;
-            font-size: 2.5em;
-            text-align: center;
-        }
-
-        p {
-            color: #555;
-            font-size: 1.2em;
-            text-align: center;
-        }
-
-        .button-container {
-            margin-top: 20px;
-        }
-
-        .btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetCare</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <h1>Bem-vindo ao nosso site!</h1>
-    <p>Estamos felizes em tê-lo conosco. Vamos começar a explorar o que temos para oferecer.</p>
-
-    <div class="button-container">
-        <a href="/iniciar/" class="btn">Vamos começar</a> <!-- Link para a página de início -->
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">PetCare</h1>
+      <button class="btn btn-primary">Entrar</button>
     </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Bem vindo a<br>Pet Care</h2>
+      <img src="{% static 'imgs/logo.png' %}" alt="Dog Icon" class="hero-image">
+      <button class="btn btn-secondary">Vamos começar</button>
+    </section>
+
+    <section class="about">
+      <h2>Sobre nós</h2>
+      <p>No PetCare, nossa missão é facilitar o cuidado com os seus animais de estimação...</p>
+    </section>
+
+    <section class="services">
+      <h2>Nossos serviços</h2>
+      <div class="card">
+        <h3>Cadastro de Pets</h3>
+        <p>Registre todas as informações do seu pet...</p>
+      </div>
+      <div class="card">
+        <h3>Acompanhamento de Saúde</h3>
+        <p>Acesse o histórico completo do seu pet...</p>
+      </div>
+      <div class="card">
+        <h3>Gestão Multiplataforma</h3>
+        <p>Acompanhe o bem-estar dos seus pets...</p>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Seja Parte do PetCare</h2>
+      <p>Cadastre sua clínica ou atue como veterinário em nossa plataforma...</p>
+      <button class="btn btn-primary">Entre</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <h2>PetCare</h2>
+    <div class="footer-links">
+      <div>
+        <h3>Mídias sociais</h3>
+        <ul>
+          <li>Facebook</li>
+          <li>Twitter</li>
+          <li>LinkedIn</li>
+          <li>Instagram</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Integrações</h3>
+        <ul>
+          <li>Mirante</li>
+        </ul>
+      </div>
+    </div>
+    <p>&copy; 2021 Jorge Calheiros.</p>
+  </footer>
 </body>
 </html>
