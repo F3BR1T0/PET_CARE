@@ -20,3 +20,4 @@ route.register(r'vet/pets/consultation', VetPetConsultationDetailsViewSet, basen
 
 
 route.register(r'mirante', MiranteViewSet, basename="mirate")
+

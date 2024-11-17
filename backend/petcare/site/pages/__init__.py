@@ -1,0 +1,1 @@
+from .bem_vindo import BemVindoView

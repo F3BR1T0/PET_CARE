@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 
 from rest_framework import routers, permissions
 from petcare.views import route as routepetcare
+from petcare.site.urls import urlpatterns as petcaresiteurls
 
 from authentication.api import viewsets as authenticationviewsets 
 
@@ -49,6 +50,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('', include(petcaresiteurls)),
     path('', include(route.urls)),
-    path('', include(routepetcare.urls))
+    path('', include(routepetcare.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

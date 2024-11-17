@@ -17,8 +17,8 @@ class VetClinicViewSet(BaseVetAuthenticatedViewSet, mixins.UpdateModelMixin, mix
         address_serializer.is_valid(raise_exception=True)
         clinic_serializer.is_valid(raise_exception=True)
         
-        address_serializer.save()
-        clinic_serializer.save()
+        address_saved = address_serializer.save()
+        clinic_serializer.save(address = address_saved)
         
         return Response(clinic_serializer.data, status.HTTP_202_ACCEPTED)
     

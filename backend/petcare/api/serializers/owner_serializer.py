@@ -10,13 +10,19 @@ class OwnerSerializer(BaseModelSerializer):
         model = Owner
 
 class OwnerSaveSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(read_only=True)
     class Meta:
         model = Owner
-        exclude = ['address','account']
+        exclude = ['account', 'photo']
 
 class OwnerSaveWithMiranteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
         exclude = ['address','account', 'phone','photo',]
+        
+class OwnerSavePhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Owner
+        fields = ['photo',]
         
     

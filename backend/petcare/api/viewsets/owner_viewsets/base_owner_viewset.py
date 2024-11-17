@@ -8,5 +8,5 @@ class BaseOwnerAuthenticatedViewSet(BaseAuthenticatedViewSet):
     
     def get_queryset(self):
         user = self._get_user_authenticated()
-        return Owner.objects.filter(account_id=user.id)
+        return Owner.objects.filter(account=user)
     
