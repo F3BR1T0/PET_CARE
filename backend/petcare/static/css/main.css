@@ -1,0 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+:root {
+    --bg-primary: #EAA170;
+    --bg-button: #FF9500;
+    --bg-button-hover: #E76F51;
+}
+  
+body {
+    font-family: "Lexend", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+    line-height: 1.6 !important;
+}
