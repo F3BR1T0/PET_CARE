@@ -7,5 +7,3 @@ class Address(models.Model):
     state = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     cep = models.CharField(max_length=8)
-
-    12310037
