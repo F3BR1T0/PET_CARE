@@ -6,8 +6,22 @@ PetCare - Cadastrado com sucesso
 
 {%block styles%}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/cadastrado-com-sucesso.css' %}">
 {%endblock%}
 
 {%block content%}
+<main class="d-flex justify-content-center align-items-center">
+    <div class="text-center text-light">
+        <h1>Cadastro realizado <br/>com sucesso!</h1>
+        <br/>
+        <br/>
+        <p>
+            Seu cadastro foi efeutado com sucesso!<br/>
+            clique no botão abaixo para começar a usar
+        </p>
+        <br/>
+        <a class="btn btn-light btn-comece" href="{% url 'login' %}">Começar a usar</a>
+    </div>
+</main>
+<script type="module" src="{% static 'js/cadastrado-com-sucesso.js' %}"></script>
 {%endblock%}

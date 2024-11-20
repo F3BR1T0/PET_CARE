@@ -10,7 +10,9 @@ export const HTTP_STATUS = {
 export const ROUTES_API = {
     login: "/login/",
     register_account : "/accounts/",
-    register_owner : "/owner/"
+    account_me: "/accounts/me",
+    register_owner : "/owner/",
+    owner_me: "owner/me"
 }
 
 export const ROUTES_SITE = {

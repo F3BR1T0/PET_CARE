@@ -1,6 +1,6 @@
 import {getMessageOrDefault} from './tradutor.js';
 import {redirectTo} from './site-utils.js';
-import {variables, HTTP_STATUS, ROUTES_SITE} from './global.js';
+import {variables, HTTP_STATUS, ROUTES_SITE, ROUTES_API} from './global.js';
 
 export async function makePostRequest(url, headers = {}, formData = {}, responseCaseOk = (response) => {}, responseCaseError = (response) => {}, responseCaseErrorCatch = () => {}){
     try {
@@ -78,7 +78,6 @@ export const tratamentosDeErro = {
 }
 
 export async function userIsAuthenticated(){
-    const url = "/accounts/me";
     const headers = setAuthorizationTokenHeader();
     const responseCaseError = (response) => {
         tratamentosDeErro.accounts.unauthorized(response);
@@ -86,26 +85,21 @@ export async function userIsAuthenticated(){
     const responseCaseOk = async(response) => {
         const data = await response.json();
     }
-    await makeGetRequest(url, headers, responseCaseOk, responseCaseError)
+    await makeGetRequest(ROUTES_API.account_me, headers, responseCaseOk, responseCaseError)
 }
 
 export async function userHasRegister() {
-    const url = "/owner/me";
     const headers = setAuthorizationTokenHeader();
     const responseCaseError = async(response) => {
-        console.log(response);
-        console.log(await response.json());
+       tratamentosDeErro.accounts.unauthorized(response);
     }
     const responseCaseOk = async(response) => {
-        console.log(response);
         const data = await response.json();
-        console.log(data);
     }
-    await makeGetRequest(url, headers, responseCaseOk, responseCaseError)
+    await makeGetRequest(ROUTES_API.owner_me, headers, responseCaseOk, responseCaseError)
 }
 
 export async function makeLogin(email, password) {
-    const url = "/accounts/login/";
     const data = {
         email,
         password
@@ -116,7 +110,7 @@ export async function makeLogin(email, password) {
         setToken(token);
     }
     
-   await makePostRequest(url, {}, data, responseCaseOk);
+   await makePostRequest(ROUTES_API.login, {}, data, responseCaseOk);
 }
 
 export function getToken() {
