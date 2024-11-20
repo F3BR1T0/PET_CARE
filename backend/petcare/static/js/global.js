@@ -8,7 +8,7 @@ export const HTTP_STATUS = {
 }
 
 export const ROUTES_API = {
-    login: "/login/",
+    login: "/accounts/login/",
     register_account : "/accounts/",
     account_me: "/accounts/me",
     register_owner : "/owner/",
