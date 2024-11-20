@@ -15,3 +15,7 @@
     background-color: var(--bg-button-hover);
     color: white;
 }
+.container-form-button {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}

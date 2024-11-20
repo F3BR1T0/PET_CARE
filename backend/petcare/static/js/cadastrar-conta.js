@@ -1,9 +1,7 @@
 import {makePostRequest, tratamentosDeErro, makeLogin} from './api-utils.js';
-import {showAlert} from "./site-utils.js";
-const registerAccountRoute = "/accounts/";
-const loginAccountRoute = "/accounts/login";
-const pageLogin = "/login";
-const continuarCadastro = "/cadastrar/informacoes";
+import {redirectTo, showAlert} from './site-utils.js';
+import {ROUTES_API, ROUTES_SITE} from './global.js';
+import {validarCampoSenha} from './form-utils.js';
 const idAlertPlaceHolder = "liveAlertPlaceholder";
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -12,14 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmPassword = document.getElementById('confirmPassword');
     const email = document.getElementById('email');
 
+    validarCampoSenha(password);
+
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
-
-        if (password.value !== confirmPassword.value) {
-            confirmPassword.setCustomValidity('As senhas não coincidem.');
-        } else {
-            confirmPassword.setCustomValidity('');
-        }
 
         if (!form.checkValidity()) {
             event.stopPropagation();
@@ -32,17 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
             password: password.value
         };
 
-        const responseCaseOk = (response) => {
-            console.log("OK");
-            console.log(response);
+        const responseCaseOk = async (response) => {
+            await makeLogin(email.value, password.value);
+            redirectTo(ROUTES_SITE.cadastrar_informacoes);
         }
         const responseCaseError = (response) => {
             tratamentosDeErro.accounts.register.tratarErroDeEmail(response, (message) => {showAlert(message, 'danger', idAlertPlaceHolder)})
         }
-        const responseCaseErrorCatch = () => {
-            console.log("catdh");
-        }
 
-        await makePostRequest(registerAccountRoute, {}, formData, responseCaseOk, responseCaseError, responseCaseErrorCatch)
+        await makePostRequest(ROUTES_API.register_account, {}, formData, responseCaseOk, responseCaseError)
     });
 });

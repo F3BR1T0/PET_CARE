@@ -12,7 +12,7 @@ class OwnerViewSet(BaseOwnerAuthenticatedViewSet, mixins.CreateModelMixin, mixin
     def create(self, request, *args, **kwargs):
         owner = self._get_owner_authenticated()
         if owner is not None:
-            return Response({'error':'Already registered.'})
+            return Response({'error':'Already registered.'}, status.HTTP_406_NOT_ACCEPTABLE)
         
         address_data = request.data.get('address')
         serializer = self.get_serializer(data=request.data)
@@ -48,6 +48,8 @@ class OwnerViewSet(BaseOwnerAuthenticatedViewSet, mixins.CreateModelMixin, mixin
     @action(detail=False, methods=['get'])
     def me(self, request):
         owner = self._get_owner_authenticated()
+        if owner is None:
+            return Response({'error':'not registered.'}, status.HTTP_400_BAD_REQUEST)
         return Response(self.get_serializer(owner).data)
     
     @action(detail=True, methods=['put'], url_path="save-photo")

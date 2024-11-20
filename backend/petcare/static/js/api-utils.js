@@ -1,9 +1,8 @@
 import {getMessageOrDefault} from './tradutor.js';
 import {redirectTo} from './site-utils.js';
+import {variables, HTTP_STATUS, ROUTES_SITE} from './global.js';
 
-const routeLogin = "/login";
-
-export async function makePostRequest(url, headers = {}, formData = {}, responseCaseOk = (data) => {}, responseCaseError = (data) => {}, responseCaseErrorCatch = () => {}){
+export async function makePostRequest(url, headers = {}, formData = {}, responseCaseOk = (response) => {}, responseCaseError = (response) => {}, responseCaseErrorCatch = () => {}){
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -14,13 +13,13 @@ export async function makePostRequest(url, headers = {}, formData = {}, response
             body: JSON.stringify(formData)
         });
         if (response.ok) {
-            responseCaseOk(response);
+            return responseCaseOk(response);
         } else {
-            responseCaseError(response);
+            return responseCaseError(response);
         }
     } catch (error) {
         console.error('Erro na requisição:', error);
-        responseCaseErrorCatch()
+        return responseCaseErrorCatch()
     }
 }
 export async function makeGetRequest(url, headers = {}, responseCaseOk = (response) => {}, responseCaseError = (response) => {}, responseCaseErrorCatch = () => {}) {
@@ -33,13 +32,13 @@ export async function makeGetRequest(url, headers = {}, responseCaseOk = (respon
             }
         });
         if (response.ok) {
-            responseCaseOk(response);
+            return responseCaseOk(response);
         } else {
-            responseCaseError(response);
+            return responseCaseError(response);
         }
     } catch (error) {
         console.error('Erro na requisição:', error);
-        responseCaseErrorCatch()
+        return responseCaseErrorCatch()
     }
 }
 
@@ -55,14 +54,24 @@ export const tratamentosDeErro = {
                     callback(messageTraduzida.message);
     
                     if (messageTraduzida.id == 1 ) {
-                        redirectTo(routeLogin, 3000);
+                        redirectTo(ROUTES_SITE.login, 3000);
                     }
                 }
             }
         },
         unauthorized: (response) => {
-            if(response.status == 401) {
-                redirectTo(routeLogin)
+            if(response.status == HTTP_STATUS.not_authorized) {
+                redirectTo(ROUTES_SITE.login)
+            }
+        }
+    },
+    owner : {
+        register : {
+            already_registered: (response, callback = (message) => {}) => {
+                if(response.status == HTTP_STATUS.not_acceptable){
+                    callback("Usuário já está cadastrado. Você será redirecionado para a página de login.");
+                    redirectTo(ROUTES_SITE.login, 3000);
+                }
             }
         }
     }
@@ -70,17 +79,54 @@ export const tratamentosDeErro = {
 
 export async function userIsAuthenticated(){
     const url = "/accounts/me";
-    const responseCaseError = (data) => {
-        tratamentosDeErro.accounts.unauthorized(data);
+    const headers = setAuthorizationTokenHeader();
+    const responseCaseError = (response) => {
+        tratamentosDeErro.accounts.unauthorized(response);
     }
-    await makeGetRequest(url, 'GET',null, responseCaseError)
-    
+    const responseCaseOk = async(response) => {
+        const data = await response.json();
+    }
+    await makeGetRequest(url, headers, responseCaseOk, responseCaseError)
+}
+
+export async function userHasRegister() {
+    const url = "/owner/me";
+    const headers = setAuthorizationTokenHeader();
+    const responseCaseError = async(response) => {
+        console.log(response);
+        console.log(await response.json());
+    }
+    const responseCaseOk = async(response) => {
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+    }
+    await makeGetRequest(url, headers, responseCaseOk, responseCaseError)
 }
 
 export async function makeLogin(email, password) {
+    const url = "/accounts/login/";
     const data = {
         email,
         password
     };
-    console.log(data);
+    const responseCaseOk = async(response) => {
+        const data = await response.json();
+        const token = data.token;
+        setToken(token);
+    }
+    
+   await makePostRequest(url, {}, data, responseCaseOk);
+}
+
+export function getToken() {
+    return localStorage.getItem(variables.localStorageKeyAccessToken);
+}
+
+export function setToken(token) {
+    localStorage.setItem(variables.localStorageKeyAccessToken, token);
+}
+
+export function setAuthorizationTokenHeader(){
+    return {"Authorization": `Token ${getToken()}`};
 }

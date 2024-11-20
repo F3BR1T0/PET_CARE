@@ -12,9 +12,8 @@ class Owner(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(upload_to=upload_image)
     cpf = models.CharField(max_length=11, unique=True)
-    phone = models.CharField(max_length=11, null=True)
+    phone = models.CharField(max_length=13, null=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, null=True)
-    occupation = models.CharField(max_length=255)
     account = models.OneToOneField(Account,on_delete=models.CASCADE, null=True)
     
     def save(self, *args, **kwargs):

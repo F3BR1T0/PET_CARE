@@ -6,7 +6,8 @@ PetCare - Cadastrar Conta
 
 {%block styles%}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/cadastrar-conta.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {%endblock%}
 
 {%block content%}
@@ -28,13 +29,13 @@ PetCare - Cadastrar Conta
               </div>
             </div>
             <div>
-              <input type="password" class="form-control input-c" placeholder="Senha *" aria-label="Senha" id="password" required>
+              <input type="password" class="form-control input-c" placeholder="Senha *" aria-label="Senha" id="password" required maxlength="8">
               <div class="invalid-feedback">
                 Por favor, insira sua senha.
               </div>
             </div>
             <div>
-              <input type="password" class="form-control input-c" placeholder="Confirme sua senha *" aria-label="Confirme sua senha" id="confirmPassword" required>
+              <input type="password" class="form-control input-c" placeholder="Confirme sua senha *" aria-label="Confirme sua senha" id="confirmPassword" required maxlength="8">
               <div class="invalid-feedback">
                 Por favor, confirme sua senha.
               </div>

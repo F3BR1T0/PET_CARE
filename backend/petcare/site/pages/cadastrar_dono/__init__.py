@@ -1,2 +1,3 @@
-from .cadastrar_conta import CadastrarConta
-from .cadastrar_info import CadastrarInfo
+from .cadastrar_conta import CadastrarContaView
+from .cadastrar_info import CadastrarInfoView
+from .cadastrado_com_sucesso import CadastradoComSucessoView

@@ -1,2 +1,3 @@
 from .bem_vindo import BemVindoView
-from .cadastrar_dono import CadastrarConta, CadastrarInfo
+from .login import LoginView
+from .cadastrar_dono import CadastrarContaView, CadastrarInfoView, CadastradoComSucessoView
