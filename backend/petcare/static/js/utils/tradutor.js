@@ -8,6 +8,11 @@ const messages = [
         id: 1,
         _message: "account with this email already exists.",
         message: "Este email já está cadastrado. Você será redirecionado para a página de login."
+    },
+    {
+        id: 2,
+        _message: "Credenciais inválidas",
+        message: "Credenciais invalidas ou não tem cadastro com este email."
     }
 
 ];

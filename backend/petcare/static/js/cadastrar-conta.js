@@ -1,9 +1,8 @@
-import {makePostRequest, tratamentosDeErro, makeLogin} from './utils/api-utils.js';
+import {makePostRequest, tratamentosDeErros, makeLogin} from './utils/api-utils.js';
 import {redirectTo, showAlert} from './utils/site-utils.js';
 import {ROUTES_API, ROUTES_SITE} from './utils/global.js';
-import {setValidationFeedback, validarCampo} from './utils/form-utils.js';
+import {validarCampo} from './utils/form-utils.js';
 import {validarSenha, validarConfirmSenha, validarTexto} from './utils/validations.js';
-const idAlertPlaceHolder = "liveAlertPlaceholder";
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registrationForm');
@@ -13,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const feedback_email = document.getElementById("invalid-feedback-email");
     const feedback_password = document.getElementById("invalid-feedback-password");
     const feedback_confirm_password = document.getElementById("invalid-feedback-confirm-password");
+    const alertPlaceholder = document.getElementById("liveAlertPlaceholder");
 
     validarCampo(email, feedback_email, validarTexto);
     validarCampo(password, feedback_password, validarSenha);
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             redirectTo(ROUTES_SITE.cadastrar_informacoes);
         }
         const responseCaseError = (response) => {
-            tratamentosDeErro.accounts.register.tratarErroDeEmail(response, (message) => {showAlert(message, 'danger', idAlertPlaceHolder)})
+            tratamentosDeErros.accounts.register.tratarErroDeEmail(response, (message) => {showAlert(message, 'danger', alertPlaceholder)})
         }
 
         await makePostRequest(ROUTES_API.register_account, {}, formData, responseCaseOk, responseCaseError)

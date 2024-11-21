@@ -1,4 +1,4 @@
-import {userIsAuthenticated, makeGetRequest, makePostRequest, setAuthorizationTokenHeader, tratamentosDeErro} from './utils/api-utils.js';
+import {userIsAuthenticated, makeGetRequest, makePostRequest, setAuthorizationTokenHeader, tratamentosDeErros} from './utils/api-utils.js';
 import {redirectTo, showAlert} from './utils/site-utils.js';
 import {validarCampo, setValidationFeedback, validClass} from './utils/form-utils.js';
 import {validarCEP, validarCpF, validarTexto, validarTelefone} from "./utils/validations.js";
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedback_cep = document.getElementById("invalid-feedback-cep");
     const feedback_estado = document.getElementById("invalid-feedback-estado");
     const feedback_cidade = document.getElementById("invalid-feedback-cidade");
-    const alertplanceholder = "liveAlertPlaceholder";
+    const alertplaceholder = document.getElementById("liveAlertPlaceholder");
     const pais = "Brasil";
 
     preenchimentoAutomaticoEstadoCidade();
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             redirectTo(ROUTES_SITE.cadastrado_com_sucesso);
         }
         const responseCaseError = async(response) => {
-            tratamentosDeErro.owner.register.already_registered(response,(message) => {showAlert(message,"danger",alertplanceholder)})
+            tratamentosDeErros.owner.register.already_registered(response,(message) => {showAlert(message,"danger",alertplaceholder)})
         }
         await makePostRequest(ROUTES_API.register_owner, setAuthorizationTokenHeader(), formData, responseCaseOK, responseCaseError);
     });

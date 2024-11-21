@@ -4,7 +4,8 @@ export const variables = {
 
 export const HTTP_STATUS = {
     not_acceptable: 406,
-    not_authorized: 401
+    not_authorized: 401,
+    bad_request: 400
 }
 
 export const ROUTES_API = {

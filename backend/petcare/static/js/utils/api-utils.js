@@ -42,7 +42,7 @@ export async function makeGetRequest(url, headers = {}, responseCaseOk = (respon
     }
 }
 
-export const tratamentosDeErro = {
+export const tratamentosDeErros = {
     accounts: {
         register : {
             tratarErroDeEmail : async(response, callback) => {
@@ -63,7 +63,7 @@ export const tratamentosDeErro = {
             if(response.status == HTTP_STATUS.not_authorized) {
                 redirectTo(ROUTES_SITE.login)
             }
-        }
+        },
     },
     owner : {
         register : {
@@ -72,8 +72,18 @@ export const tratamentosDeErro = {
                     callback("Usuário já está cadastrado. Você será redirecionado para a página de login.");
                     redirectTo(ROUTES_SITE.login, 3000);
                 }
+            },
+            donthaveregister: (response) => {
+                if(response.status == HTTP_STATUS.bad_request){
+                    redirectTo(ROUTES_SITE.cadastrar_informacoes);
+                }
             }
         }
+    },
+    default_error: async(response, callback = (message) => {}) => {
+        const data = await response.json();
+        const message = data.error || "";
+        callback(getMessageOrDefault(message).message);
     }
 }
 
@@ -91,15 +101,16 @@ export async function userIsAuthenticated(){
 export async function userHasRegister() {
     const headers = setAuthorizationTokenHeader();
     const responseCaseError = async(response) => {
-       tratamentosDeErro.accounts.unauthorized(response);
+       tratamentosDeErros.owner.register.donthaveregister(response);
     }
     const responseCaseOk = async(response) => {
         const data = await response.json();
+        return data;
     }
-    await makeGetRequest(ROUTES_API.owner_me, headers, responseCaseOk, responseCaseError)
+    return await makeGetRequest(ROUTES_API.owner_me, headers, responseCaseOk, responseCaseError);
 }
 
-export async function makeLogin(email, password) {
+export async function makeLogin(email, password, callbackResponseCaseError = (response) => {}, callbackResponseCaseOk = (response) => {}) {
     const data = {
         email,
         password
@@ -108,9 +119,9 @@ export async function makeLogin(email, password) {
         const data = await response.json();
         const token = data.token;
         setToken(token);
+        return callbackResponseCaseOk();
     }
-    
-   await makePostRequest(ROUTES_API.login, {}, data, responseCaseOk);
+    return await makePostRequest(ROUTES_API.login, {}, data, responseCaseOk, callbackResponseCaseError);
 }
 
 export function getToken() {
