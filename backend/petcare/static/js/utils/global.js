@@ -13,7 +13,8 @@ export const ROUTES_API = {
     register_account : "/accounts/",
     account_me: "/accounts/me",
     register_owner : "/owner/",
-    owner_me: "owner/me"
+    owner_me: "/owner/me",
+    get_pets: "/pet"
 }
 
 export const ROUTES_SITE = {
