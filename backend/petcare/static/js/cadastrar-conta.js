@@ -1,7 +1,8 @@
-import {makePostRequest, tratamentosDeErro, makeLogin} from './api-utils.js';
-import {redirectTo, showAlert} from './site-utils.js';
-import {ROUTES_API, ROUTES_SITE} from './global.js';
-import {validarCampoSenha} from './form-utils.js';
+import {makePostRequest, tratamentosDeErro, makeLogin} from './utils/api-utils.js';
+import {redirectTo, showAlert} from './utils/site-utils.js';
+import {ROUTES_API, ROUTES_SITE} from './utils/global.js';
+import {setValidationFeedback, validarCampo} from './utils/form-utils.js';
+import {validarSenha, validarConfirmSenha, validarTexto} from './utils/validations.js';
 const idAlertPlaceHolder = "liveAlertPlaceholder";
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -9,12 +10,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmPassword');
     const email = document.getElementById('email');
+    const feedback_email = document.getElementById("invalid-feedback-email");
+    const feedback_password = document.getElementById("invalid-feedback-password");
+    const feedback_confirm_password = document.getElementById("invalid-feedback-confirm-password");
 
-    validarCampoSenha(password);
+    validarCampo(email, feedback_email, validarTexto);
+    validarCampo(password, feedback_password, validarSenha);
+    validarCampo(confirmPassword, feedback_confirm_password, (value) => validarConfirmSenha(value, password.value))
 
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
-
         if (!form.checkValidity()) {
             event.stopPropagation();
             form.classList.add('was-validated');

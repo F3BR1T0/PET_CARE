@@ -1,8 +1,9 @@
-import {userIsAuthenticated, makeGetRequest, makePostRequest, setAuthorizationTokenHeader, tratamentosDeErro} from './api-utils.js';
-import {redirectTo, showAlert} from './site-utils.js';
-import {validarCampoCEP, validarCampoCPF, validarCampoTelefone} from './form-utils.js';
-import {removeCarecteresNaoNumericos} from './validations.js';
-import {ROUTES_API, ROUTES_SITE} from './global.js';
+import {userIsAuthenticated, makeGetRequest, makePostRequest, setAuthorizationTokenHeader, tratamentosDeErro} from './utils/api-utils.js';
+import {redirectTo, showAlert} from './utils/site-utils.js';
+import {validarCampo, setValidationFeedback, validClass} from './utils/form-utils.js';
+import {validarCEP, validarCpF, validarTexto, validarTelefone} from "./utils/validations.js";
+import {removeCarecteresNaoNumericos} from './utils/validations.js';
+import {ROUTES_API, ROUTES_SITE} from './utils/global.js';
 
 userIsAuthenticated();
 
@@ -15,13 +16,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const cep = document.getElementById("cep");
     const estado = document.getElementById("estado");
     const cidade = document.getElementById("cidade");
+    const feedback_name = document.getElementById("invalid-feedback-nome");
+    const feedback_cpf = document.getElementById("invalid-feedback-cpf");
+    const feedback_phone = document.getElementById("invalid-feedback-telefone");
+    const feedback_cep = document.getElementById("invalid-feedback-cep");
+    const feedback_estado = document.getElementById("invalid-feedback-estado");
+    const feedback_cidade = document.getElementById("invalid-feedback-cidade");
     const alertplanceholder = "liveAlertPlaceholder";
     const pais = "Brasil";
 
     preenchimentoAutomaticoEstadoCidade();
-    validarCampoCPF(cpf);
-    validarCampoTelefone(phone);
-    validarCampoCEP(cep);
+    validarCampo(name, feedback_name, validarTexto);
+    validarCampo(cpf, feedback_cpf, validarCpF);
+    validarCampo(phone, feedback_phone, validarTelefone);
+    validarCampo(cep, feedback_cep, validarCEP);
+    validarCampo(estado, feedback_estado, validarTexto);
+    validarCampo(cidade, feedback_cidade, validarTexto);
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();  
@@ -57,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     estado.value = data.uf || "";
                     cidade.value = data.localidade || "";
+                    estado.setCustomValidity("");
+                    cidade.setCustomValidity("");
+                    setValidationFeedback(feedback_estado, estado.validationMessage);
+                    setValidationFeedback(feedback_cidade, cidade.validationMessage);
+                    validClass(estado);
+                    validClass(cidade);
                 }
                 const responseCaseError = (resonse) => {
                     console.log("Erro ao buscar cep");

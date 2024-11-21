@@ -15,18 +15,18 @@ PetCare - Cadastrar Informações
     <h1 class="text-light">Agora insira suas informações</h1>
   </header>
   <main>
-    <div class="container d-flex flex-column justify-content-center align-items-center">
-      <div class="divisor">
-        <p>
-          Economize seu tempo com Mirante, caso já tenho um cadastro na plataforma clique no botão abaixo para usar suas informações já cadastradas.
-        </p>
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-dark">
-            Cadastrar com Mirante
-          </button>
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <div style="max-width: 800px" class="container">
+        <div class="divisor">
+          <p>
+            Economize seu tempo com Mirante, caso já tenho um cadastro na plataforma clique no botão abaixo para usar suas informações já cadastradas.
+          </p>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-dark">
+              Cadastrar com Mirante
+            </button>
+          </div>
         </div>
-      </div>
-      <div>
         <p class="text-center">
           <strong>Ou</strong><br/>
           cadastra-se manualmente
@@ -39,20 +39,20 @@ PetCare - Cadastrar Informações
             <div class="row g-3 gap-3">
               <div>
                 <input type="text" class="form-control input-c" placeholder="Nome *" aria-label="Nome" id="nome" required maxlength="200">
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" id="invalid-feedback-nome">
                   Por favor, insira seu nome.
                 </div>
               </div>
               <div>
                 <input type="text" class="form-control input-c" placeholder="CPF *" data-mask="000.000.000-00" aria-label="CPF" id="cpf" required>
-                <div class="invalid-feedback">
-                  CPF invalido.
+                <div class="invalid-feedback" id="invalid-feedback-cpf">
+                  Por favor, insira seu CPF.
                 </div>
               </div>
               <div>
                 <input type="text" class="form-control input-c" placeholder="Telefone *" data-mask="+55 (00) 00000-0000" aria-label="Telefone" id="telefone" required>
-                <div class="invalid-feedback">
-                  Por favor, insira seu telefone de contato.
+                <div class="invalid-feedback" id="invalid-feedback-telefone">
+                  Por favor, insira seu telefone.
                 </div>
               </div>
             </div>
@@ -65,19 +65,19 @@ PetCare - Cadastrar Informações
             <div class="row g-3 gap-3">
               <div>
                 <input type="text" class="form-control input-c" placeholder="CEP *" data-mask="000000-00" aria-label="CEP" id="cep" required maxlength="200">
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" id="invalid-feedback-cep">
                   Por favor, insira seu cep.
                 </div>
               </div>
               <div>
                 <input type="text" class="form-control input-c" placeholder="Estado *" aria-label="Estado" id="estado" required maxlength="200">
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" id="invalid-feedback-estado">
                   Por favor, insira seu estado.
                 </div>
               </div>
               <div>
                 <input type="text" class="form-control input-c" placeholder="Cidade *" aria-label="Cidade" id="cidade" required>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" id="invalid-feedback-cidade">
                   Por favor, insira sua cidade.
                 </div>
               </div>
@@ -86,7 +86,7 @@ PetCare - Cadastrar Informações
               </div>
             </div>
           </div>
-        </form>
+      </form>
       </div>
     </div>
     

@@ -1,3 +1,3 @@
-import {userHasRegister} from './api-utils.js';
+import {userHasRegister} from './utils/api-utils.js';
 
 userHasRegister();
