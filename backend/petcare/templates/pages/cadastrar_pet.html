@@ -58,7 +58,7 @@ PetCare - Cadastrar - Pet
                 </div>
               </div>
               <div>
-                <input type="text" class="form-control input-c" placeholder="Peso em kg *" aria-label="Peso" id="peso" data-mask="00.00 kg" required>
+                <input type="text" class="form-control input-c" placeholder="Peso em kg *" aria-label="Peso" id="peso" data-mask="00.00" required>
                 <div class="invalid-feedback" id="invalid-feedback-peso">
                   Por favor, insira o peso de seu pet.
                 </div>
@@ -66,8 +66,8 @@ PetCare - Cadastrar - Pet
               <div>
                 <select class="form-select input-c" id="genero" required>
                     <option selected hidden value="">Genero</option>
-                    <option value="Macho">Macho</option>
-                    <option value="Femea">Femea</option>
+                    <option value="1">Macho</option>
+                    <option value="2">Femea</option>
                 </select>
                 <div class="invalid-feedback" id="invalid-feedback-genero">
                     Por favor, escolha o genero do seu pet.
@@ -82,6 +82,5 @@ PetCare - Cadastrar - Pet
       </div>
 </main>
 <script type="module" src="{% static 'js/cadastrar-pet.js' %}"></script>
-<script src="{%static 'js/plugins/jquery/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'js/plugins/jQuery-Mask-Plugin-master/src/jquery.mask.js'%}"></script>
 {% endblock %}

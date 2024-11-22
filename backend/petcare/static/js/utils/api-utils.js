@@ -77,6 +77,9 @@ export const tratamentosDeErros = {
                 if(response.status == HTTP_STATUS.bad_request){
                     redirectTo(ROUTES_SITE.cadastrar_informacoes);
                 }
+                if(response.status == HTTP_STATUS.not_authorized){
+                    redirectTo(ROUTES_SITE.bem_vindo);
+                }
             }
         }
     },
@@ -90,7 +93,7 @@ export const tratamentosDeErros = {
 export async function userIsAuthenticated(){
     const headers = setAuthorizationTokenHeader();
     const responseCaseError = (response) => {
-        tratamentosDeErro.accounts.unauthorized(response);
+        tratamentosDeErros.accounts.unauthorized(response);
     }
     const responseCaseOk = async(response) => {
         const data = await response.json();
