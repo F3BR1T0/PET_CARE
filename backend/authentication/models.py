@@ -17,7 +17,7 @@ class AccountManager(BaseUserManager):
         user.save()
         return user
     
-    def create_superuser(self,username,email, password=None):
+    def create_superuser(self, username, email, password=None):
         user = self.create_user(username, email, password)
         user.is_superuser = True
         user.is_staff = True
@@ -34,6 +34,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     
     USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email',]
 
     objects = AccountManager()
     

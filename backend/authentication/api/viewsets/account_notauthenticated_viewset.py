@@ -15,11 +15,11 @@ class AccountNotAuthenticatedViewSet(mixins.CreateModelMixin, viewsets.GenericVi
         
         serializer.is_valid(raise_exception=True)
         
-        username = serializer.validated_data.get('username')
+        email = serializer.validated_data.get('email')
         password = serializer.validated_data.get('password')
             
         # Autentica o usuário
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
             
         if user is not None:
             # Se as credenciais estão corretas, obtenha ou crie o token

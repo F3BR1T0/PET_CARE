@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,6 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'petcare/static')] 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -129,4 +131,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Customize
 
+AUTHENTICATION_BACKENDS = [
+    'authentication.api.custom_auth.EmailAuthBackend',
+]
+
 AUTH_USER_MODEL = 'authentication.Account'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MIRANTE_AUTHENTICATE = 'http://10.120.74.108:3031/rpc/login'
+MIRATE_ROUTE_USERS = 'http://10.120.74.108:3031/rpc/rgpet'
+MIRANTE_CREDENTIALS_LOGIN_EMAIL = 'rgpet@mirante.jutty.dev'
+MIRANTE_CREDENTIALS_LOGIN_PASSWORD = 'nZmZm8BgA'
+
+DOMAIN = "http://127.0.0.1:8000"

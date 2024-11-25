@@ -1,59 +1,71 @@
 from .base_owner_viewset import BaseOwnerAuthenticatedViewSet, mixins, Response, status, action
-from ...serializers import OwnerSaveSerializer, OwnerSerializer, AddressSerializer
+from ...serializers import OwnerSaveSerializer, OwnerSerializer, AddressSerializer, OwnerSavePhotoSerializer
 
 class OwnerViewSet(BaseOwnerAuthenticatedViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin):
     def get_serializer_class(self):
         actions = {
             "me": OwnerSerializer,
-            "address": AddressSerializer,
-            "address_update": AddressSerializer,
+            "save_photo": OwnerSavePhotoSerializer
         }
         return actions.get(self.action, OwnerSaveSerializer)
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-    
-        serializer.is_valid(raise_exception=True)    
+        owner = self._get_owner_authenticated()
+        if owner is not None:
+            return Response({'error':'Already registered.'}, status.HTTP_406_NOT_ACCEPTABLE)
         
-        owner_saved = serializer.save(account = self._get_user())
+        address_data = request.data.get('address')
+        serializer = self.get_serializer(data=request.data)
+        address_serializer = AddressSerializer(data=address_data)          
+    
+        serializer.is_valid(raise_exception=True)
+        address_serializer.is_valid(raise_exception=True)
+        
+        address_saved = address_serializer.save()
+        
+        owner_saved = serializer.save(account = self._get_user_authenticated(), address=address_saved)
         
         if owner_saved:
             return Response(serializer.data,status.HTTP_201_CREATED)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
+    def update(self, request, pk: None,*args, **kwargs):
+        owner = self.get_queryset().filter(id=pk).first()
+        if owner is None:
+            return Response({'error':'Not Found.'}, status.HTTP_404_NOT_FOUND)
+        address_data = request.data.get('address', {})
+        address_serializer = AddressSerializer(data=address_data, instance=owner.address)
+        owner_serializer = self.get_serializer(data=request.data, instance=owner)
+        
+        address_serializer.is_valid(raise_exception=True)
+        owner_serializer.is_valid(raise_exception=True)
+        
+        address_saved = address_serializer.save()
+        owner_serializer.save(address=address_saved)
+        
+        return Response(owner_serializer.data, status.HTTP_202_ACCEPTED)
+    
     @action(detail=False, methods=['get'])
     def me(self, request):
-        return Response(self.get_serializer(self.get_queryset().first()).data)
+        owner = self._get_owner_authenticated()
+        if owner is None:
+            return Response({'error':'not registered.'}, status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(owner).data)
     
-    @action(detail=False, methods=['post'], url_name="create address", url_path="address")
-    def address(self, request):
-        owner = self.get_queryset().first()
-        if owner.address:
-            return Response('Address already exists.')
+    @action(detail=True, methods=['put'], url_path="save-photo")
+    def save_photo(self, request, pk: None):
+        owner = self.get_queryset().filter(id=pk).first()
         
-        serializer = self.get_serializer(data=request.data)
+        if owner is None:
+            return Response({'error':'Not Found.'}, status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.get_serializer(data=request.data, instance=owner)
         
         serializer.is_valid(raise_exception=True)
         
-        address_saved = serializer.save()
+        serializer.save()
         
-        if address_saved:
-            owner.address = address_saved
-            owner.save()
-            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-    
-    @action(detail=False, methods=['put'], url_name="update address", url_path="address-update")
-    def address_update(self, request):
-        serializer = self.get_serializer(data=request.data, instance = self.get_queryset().first().address)
-        serializer.is_valid(raise_exception=True)
         
-        address_saved = serializer.save()
-        
-        if address_saved:
-            return Response(serializer.data, status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-    
         
